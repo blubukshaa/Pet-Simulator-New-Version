@@ -6,7 +6,6 @@
 #include <ctime>
 using namespace std;
 
-
 struct pet{
     string jenis;
     string nama_pet;
@@ -242,18 +241,7 @@ void Tidur(pet &p, aktivitas* &head) {
     }
 }
 
-const int Jumlah_lokasi = 4;
-
-string namalokasi[Jumlah_lokasi] =
-{"Rumah", "Taman", "Arena", "Toko" };
-
-int adj[Jumlah_lokasi][Jumlah_lokasi] = {
-    {0, 1, 0, 1}, // Rumah
-    {1, 0, 1, 0}, // Taman
-    {0, 1, 0, 1}, // Arena
-    {1, 0, 1, 0}  // Toko
-
-}; 
+// fungsi Main
 void Main(pet &p, aktivitas* &head) {
     int pilih;
 
@@ -393,58 +381,73 @@ void InisialisasiPetBaru(pet &p) {
     cout << "Koin kamu tetap: " << p.koin << endl;
 }
 
-void jalanjalan(int &posisi)
+void jalanjalan(string &lokasi)
 {
-    int tujuan [10];
-    int jumlah = 0;
+    int pilih;
 
-    cout << "\nLokasi Saat Ini : " << namalokasi[posisi] << endl;
-    cout << "\nTujuan tersedia:\n";
+    cout << "\n========== MAP ==========\n";
+    cout << "🏠 Rumah\n";
+    cout << "   |\n";
+    cout << "🌳 Taman\n";
+    cout << "   |\n";
+    cout << "🎯 Arena\n";
+    cout << "   |\n";
+    cout << "🏪 Toko\n";
+    cout << "=========================\n";
 
-    for(int i=0; i<4;i++)
+    cout << "\n📍 Lokasi saat ini: "
+         << lokasi << endl;
+
+    if(lokasi == "Rumah")
     {
-        if(adj[posisi][i] == 1)
-        {
-            jumlah++;
+        cout << "1. Ke Taman\n";
 
-            cout << jumlah << "." << namalokasi[i] << endl;
+        pilih = ValidasiInput(1,1,"Pilihan: ");
 
-            tujuan[jumlah] = i;
-        }
+        lokasi = "Taman";
     }
-    int pilih = ValidasiInput(1, jumlah, "Pilih tujuan: ");
-    
-    posisi = tujuan[pilih];
-    
+
+    else if(lokasi == "Taman")
+    {
+        cout << "1. Ke Rumah\n";
+        cout << "2. Ke Arena\n";
+
+        pilih = ValidasiInput(1,2,"Pilihan: ");
+
+        if(pilih == 1)
+            lokasi = "Rumah";
+        else
+            lokasi = "Arena";
+    }
+
+    else if(lokasi == "Arena")
+    {
+        cout << "1. Ke Taman\n";
+        cout << "2. Ke Toko\n";
+
+        pilih = ValidasiInput(1,2,"Pilihan: ");
+
+        if(pilih == 1)
+            lokasi = "Taman";
+        else
+            lokasi = "Toko";
+    }
+
+    else if(lokasi == "Toko")
+    {
+        cout << "1. Ke Arena\n";
+
+        pilih = ValidasiInput(1,1,"Pilihan: ");
+
+        lokasi = "Arena";
+    }
+
     cout << "\n📍 Sekarang berada di "
-         << namalokasi[posisi] << endl;
-    
+         << lokasi << endl;
 }
 
-void CariItem(pet &p, aktivitas* &head)
-{
-    int hadiah = rand()%3;
-
-    if(hadiah == 0){
-        p.apel++;
-        cout << "Kamu menemukan sebuah apel!\n";
-        TambahAktivitas(head, "Menemukan apel di taman");  
-    }
-
-    else if(hadiah == 1)
-    {
-        p.roti++;
-        cout << "Kamu menemukan sebuah roti!\n";
-        TambahAktivitas(head, "Menemukan roti di taman");
-    }
-
-    else
-    {
-        p.koin += 10;
-        cout << "Menemukan 10 koin!!\n";
-        TambahAktivitas(head, "Menemukan koin di taman");
-    }
-}
+void Menulokasi(string &lokasi)
+{}
 
 // fitur Main
 int main() {
@@ -490,15 +493,15 @@ int main() {
 
 
     int pilihan;
-    int posisi = 0;
     bool jalan = true;
 
+    string lokasi = "Rumah";
 
     while (jalan) {
         cout << "\n=================================\n";
         cout << "         \U0001F3AE PawPal        \n";
         cout << "=================================\n";
-        cout << "\n Lokasi saat ini: " << namalokasi[posisi] << endl;
+        cout << "\n Lokasi saat ini: " << lokasi << endl;
         cout << "1. \U0001F4CA Lihat Status\n";
         cout << "2. \U0001F37D Jalan-jalan\n";
         cout << "3. \U0001F37D  Makan\n";
@@ -508,11 +511,11 @@ int main() {
         cout << "7. \U0001F4DC Lihat Aktivitas\n";
 
     if (CekStatusPenuh(myPet)) {
-        cout << "9. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
+        cout << "7. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
         cout << "8. Keluar\n";
     }
     else {
-        cout << "8. Keluar\n";
+        cout << "7. Keluar\n";
     }
 
     cout << "Pilihan: ";
@@ -532,16 +535,12 @@ int main() {
                 break;
 
             case 2:
-                jalanjalan(posisi);
-                if (posisi == 1)
-                {
-                    CariItem(myPet, head);
-                }
+                jalanjalan(lokasi);
                 break;
 
             case 3:
 
-            if (namalokasi[posisi] != "Rumah")
+            if (lokasi != "Rumah")
             {
                 cout << "Pet harus berada di rumah untuk makan!\n";
                 break;
@@ -553,7 +552,7 @@ int main() {
 
             case 4:
 
-            if (namalokasi[posisi] != "Toko")
+            if (lokasi != "Toko")
             {
                 cout << "Pet harus berada di toko untuk membeli makanan!\n";
                 break;
@@ -565,7 +564,7 @@ int main() {
 
             case 5:
 
-            if (namalokasi[posisi] != "Rumah")
+            if (lokasi != "Rumah")
             {
                 cout << "Pet harus berada di rumah untuk tidur!\n";
                 break;
@@ -577,7 +576,7 @@ int main() {
 
             case 6:
 
-            if (namalokasi[posisi] != "Arena")
+            if (lokasi != "Arena")
             {
                 cout << "Pet harus berada di arena untuk bermain!\n";
                 break;
