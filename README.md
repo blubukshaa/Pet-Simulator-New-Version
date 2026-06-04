@@ -2,6 +2,6 @@
 A small project by:
 - Kayla Putri Pandita
 - Lina Lisnawati
-- Mira Rachma Puspita Dewi
+- Mira Rachma Puspita Dewi (2502383)
 - Shafa Stevia Putri
 - Tsabitah Ardelia Wahyudi
