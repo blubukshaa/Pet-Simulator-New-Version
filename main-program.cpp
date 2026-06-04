@@ -6,6 +6,13 @@
 #include <ctime>
 using namespace std;
 
+const int jumlahTabung = 4; 
+const int kapasitas = 3;
+
+string tabung [jumlahTabung][kapasitas];
+int top [jumlahTabung];
+
+
 struct pet{
     string jenis;
     string nama_pet;
@@ -241,6 +248,171 @@ void Tidur(pet &p, aktivitas* &head) {
     }
 }
 
+//game susun bola
+void createStack()
+{
+    for (int i = 0; i < jumlahTabung; i++)
+    {
+        top[i] = -1;
+    }
+}
+
+bool isEmpty(int i) 
+{
+    return top[i] == -1;
+}
+
+bool isFull(int i)
+{
+    return top[i] == kapasitas -1;
+}
+
+//push
+void push(int i, string data)
+{
+    if(!isFull(i))
+    {
+        top[i]++;
+        tabung[i][top[i]] = data;
+    }
+}
+
+//pop
+string pop(int i) 
+{
+    if (!isEmpty(i)) 
+    {
+        return tabung[i][top[i]--];
+    }
+    return "";
+}
+
+void isiAwal()
+{
+    createStack();
+    push(0, "biru"); push(0, "kuning"); push(0, "hijau");
+    push(1, "kuning"); push(1, "kuning"); push(1, "hijau");
+    push(2, "hijau"); push(2, "biru"); push(2, "biru");
+}
+
+//display
+void display() 
+{
+    cout << "Isi Tabung:" << endl;
+    for (int i = 0; i < jumlahTabung; i++) 
+    {
+        cout << "Tabung " << i + 1<< ": ";
+        for (int j = 0; j <= top[i]; j++) 
+        {
+            cout << tabung[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void pindah(int asal, int tujuan)
+{
+    if(isEmpty(asal))
+    {
+        cout << "Tabung asal kosong" << endl;
+        return;
+    }
+
+    if(isFull(tujuan))
+    {
+        cout << "Tabung Tujuan penuh" << endl;
+        return;
+    }
+
+    string warna = tabung[asal][top[asal]];
+
+    pop(asal);
+    push(tujuan, warna);
+
+    cout << "Berhasil pindah" << endl;
+}
+
+bool cekMenang() {
+    for (int i = 0; i < jumlahTabung; i++) {
+        if (!isEmpty(i)) {
+            if (top[i] != kapasitas - 1) {
+                return false;
+            }
+
+            string warna = tabung[i][0];
+            for (int j = 1; j <= top[i]; j++) {
+                if (tabung[i][j] != warna) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+void gameSusunBola (pet &p, aktivitas* &head){
+        isiAwal();
+
+    int asal, tujuan;
+
+    do {
+        display();
+
+            if (cekMenang()) {
+
+        p.koin += 50;
+        p.bahagia += 20;
+        p.energi -= 10;
+
+        if (p.bahagia > 100) p.bahagia = 100;
+        if (p.energi < 0) p.energi = 0;
+
+        cout << "\n🎉 Selamat Kamu Menang!\n";
+        cout << "+50 Koin\n";
+        cout << "+20 Bahagia\n";
+        cout << "-10 Energi\n";
+
+        cout << "\nStatus Setelah Bermain:\n";
+        cout << "Energi sekarang    : " << p.energi << endl;
+        cout << "Bahagia sekarang   : " << p.bahagia << endl;
+        cout << "Koin sekarang      : " << p.koin << endl;
+
+        TambahAktivitas(head, "Menang game susun bola");
+
+        break;
+    }
+
+        cout << "\n0 = Menyerah";
+        cout << "\n-1 = Keluar";
+        cout << "\nPilih tabung asal (-1 untuk keluar, 0 untuk menyerah): ";
+        cin >> asal;
+
+        if (asal == 0)
+        {
+            cout << "Kamu menyerah, tidak mendapat poin!\n";  
+
+            TambahAktivitas(head, "Menyerah pada game susun bola");
+            return;
+        }
+
+        if (asal == -1) break;
+
+        cout << "\nPilih tabung tujuan: ";
+        cin >> tujuan;
+
+        asal--;
+        tujuan--;
+
+        if (asal < 0 || asal >= jumlahTabung || tujuan < 0 || tujuan >= jumlahTabung) {
+            cout << "Input tabung tidak valid!\n";
+            continue;
+        }
+
+        pindah(asal, tujuan);
+
+    } while (true);
+}
+
 // fungsi Main
 void Main(pet &p, aktivitas* &head) {
     int pilih;
@@ -252,7 +424,7 @@ void Main(pet &p, aktivitas* &head) {
 
     cout << "\n=== PILIH AKTIVITAS MAIN ===\n";
     cout << "Energi saat ini: " << p.energi << endl;
-    cout << "1. Main bola (+15 koin, +15 bahagia, -10 energi)\n";
+    cout << "1. Main susun bola (+50 koin, +35 bahagia, -20 energi)\n";
     cout << "2. Jalan-jalan (+20 koin, +20 bahagia, -15 energi)\n";
     cout << "3. Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
     cout << "4. Kembali\n";
@@ -261,17 +433,12 @@ void Main(pet &p, aktivitas* &head) {
     if (pilih == 4) return;
 
     if (pilih == 1) {
-        if (p.energi < 10) {
-            cout << p.nama_pet << " terlalu lelah untuk bermain bola!\n";
+        if (p.energi < 20) {
+            cout << p.nama_pet << " terlalu lelah untuk bermain susun bola!\n";
             return;
         }
-        p.koin += 15;
-        p.energi -= 10;
-        p.bahagia +=10;
-        TambahAktivitas(head, "Main bola");
-        cout << "Selesai bermain!\n";
-        cout << "Bahagia sekarang   : " << p.bahagia << endl;
-        cout << "Koin sekarang      : " << p.koin << endl;
+
+        gameSusunBola(p, head);
     }
     else if (pilih == 2) {
         if (p.energi < 15) {
