@@ -40,6 +40,13 @@ struct Skill{
     Skill* kanan;
 };
 
+struct transaksi{
+    string namaMakanan;
+    int jumlah;
+    int totalHarga;
+    transaksi* next;
+};
+
 int ValidasiInput(int min, int max, string pesan) {
     int input;
     while (true) {
@@ -70,8 +77,21 @@ head = baru;
 
 Skill* CariSkill(Skill* root, string nama);
 
-void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot){
-    int pilih;
+void PushTransaksi(transaksi* &top, string makanan, int jumlah, int total){
+    transaksi* baru = new transaksi;
+
+    baru->namaMakanan = makanan;
+    baru->jumlah = jumlah;
+    baru->totalHarga = total;
+
+    baru->next = top;
+    top = baru;
+}
+
+void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
+    int pilih, jumlah;
+    string namaMakanan;
+    int harga = 0;
     Skill* berhitung =
     CariSkill(skillRoot,"Berhitung");
 
@@ -89,8 +109,8 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot){
 
     cout << "=== TOKO MAKANAN ===" << endl;
     cout << "1. Apel (Harga: "
-     << hargaApel
-     << ", Lapar -5)" << endl;
+        << hargaApel
+        << ", Lapar -5)" << endl;
 
     cout << "2. Daging (Harga: "
         << hargaDaging
@@ -104,54 +124,60 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot){
 
     if (pilih == 4) return;
 
-    if (pilih == 1){
-        if (p.koin >= hargaApel){
-            p.koin -= hargaApel;
-            p.apel++;
-            TambahAktivitas(head, "Membeli apel");
-            cout << "Berhasil membeli apel!\n";
-            cout << "====================" << endl;
-            cout << "Sisa koin: " << p.koin << endl;
+    jumlah = ValidasiInput(1, 100, "Masukkan jumlah pembelian: ");    
 
-            cout << "=== STOK MAKANAN ===" << endl;
-            cout << "\U0001F34E Apel   : " << p.apel << endl;
-            cout << "\U0001F356 Daging : " << p.daging << endl;
-            cout << "\U0001F35E Roti   : " << p.roti << endl;
-        } 
-        else cout << "Koin tidak cukup!";
-    }
-    else if (pilih == 2){
-        if (p.koin >= hargaDaging){
-            p.koin -= hargaDaging;
-            p.daging++;
-            TambahAktivitas(head, "Membeli daging");
-            cout << "Berhasil membeli daging!\n";
-            cout << "====================" << endl;
-            cout << "Sisa koin: " << p.koin << endl;
+    switch(pilih){
+        case 1:
+            namaMakanan = "Apel";
+            harga = hargaApel;
+            break;
 
-            cout << "=== STOK MAKANAN ===" << endl;
-            cout << "\U0001F34E Apel   : " << p.apel << endl;
-            cout << "\U0001F356 Daging : " << p.daging << endl;
-            cout << "\U0001F35E Roti   : " << p.roti << endl;
-        } else cout << "Koin tidak cukup!\n";
-    }
-    else if (pilih == 3){
-        if (p.koin >= hargaRoti){
-            p.koin -= hargaRoti;
-            p.roti++;
-            TambahAktivitas(head, "Membeli roti");
-            cout << "Berhasil membeli roti!\n";
-            cout << "====================" << endl;
-            cout << "Sisa koin: " << p.koin << endl;
+        case 2:
+            namaMakanan = "Daging";
+            harga = hargaDaging;
+            break;
 
-            cout << "=== STOK MAKANAN ===" << endl;
-            cout << "\U0001F34E Apel   : " << p.apel << endl;
-            cout << "\U0001F356 Daging : " << p.daging << endl;
-            cout << "\U0001F35E Roti   : " << p.roti << endl;
-        } else cout << "Koin tidak cukup!\n";
+        case 3:
+            namaMakanan = "Roti";
+            harga = hargaRoti;
+            break;
+}
+
+    int totalHarga = harga * jumlah;
+
+    if (p.koin >= totalHarga){
+        p.koin -= totalHarga;
+
+        if (pilih == 1)
+            p.apel += jumlah;
+        else if (pilih == 2)
+            p.daging += jumlah;
+        else 
+            p.roti += jumlah;
+
+        PushTransaksi(
+            top,
+            namaMakanan,
+            jumlah,
+            totalHarga
+        );
+
+        TambahAktivitas(
+            head,
+            "Membeli " + to_string(jumlah) + " " + namaMakanan
+        );
+
+        cout << "\nBerhasil membeli " << jumlah << " " << namaMakanan << "!\n";
+        cout << "Total harga : " << totalHarga << endl;
+        cout << "Sisa koin : " << p.koin << endl;
+
+        cout << "\n=== STOK MAKANAN ===" << endl;
+        cout << "🍎 Apel   : " << p.apel << endl;
+        cout << "🍖 Daging : " << p.daging << endl;
+        cout << "🍞 Roti   : " << p.roti << endl;
     }
-    else {
-        cout << "Makanan tidak tersedia!\n";
+    else{
+        cout << "Koin tidak cukup!\n";
     }
 }
 
@@ -755,13 +781,12 @@ void InisialisasiPetBaru(pet &p) {
     cout << "Koin kamu tetap: " << p.koin << endl;
 }
 
-
-
 // fitur Main
 int main() {
     pet myPet;
     int pilih_jenis_pet;
     aktivitas* head = NULL;
+    transaksi* top = NULL;
     Skill* skillRoot = BuatSkillTree();
 
     srand(time(0)); // Random poin awal pet
@@ -790,6 +815,7 @@ int main() {
     myPet.energi = rand() % 21 + 40;
 
     myPet.skillPoint = 0;
+    myPet.koin = 50;
 
     myPet.apel = 0;
     myPet.daging = 0;
@@ -818,7 +844,7 @@ int main() {
 
     if (CekStatusPenuh(myPet)) {
         cout << "8. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
-        cout << "8. Keluar\n";
+        cout << "9. Keluar\n";
     }
     else {
         cout << "9. Keluar\n";
@@ -847,7 +873,7 @@ int main() {
                 break;
 
             case 3:
-                BeliMakanan(myPet, head, skillRoot);
+                BeliMakanan(myPet, head, skillRoot, top);
                 UpdateStatus(myPet);
                 break;
 
