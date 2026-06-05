@@ -611,34 +611,49 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
 
         break;
     }
-
+    while (true)
+    {
         cout << "\n0 = Menyerah";
         cout << "\n-1 = Keluar";
-        cout << "\nPilih tabung asal (-1 untuk keluar, 0 untuk menyerah): ";
+        cout << "\nPilih Tabung Asal (-1 untuk keluar, 0 untuk menyerah): ";
         cin >> asal;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Input harus berupa angka!\n";
+            continue;
+        }
 
         if (asal == 0)
         {
-            cout << "Kamu menyerah, tidak mendapat poin!\n";  
+            cout << "Kamu menyerah, tidak mendapat poin!\n";
 
             TambahAktivitas(head, "Menyerah pada game susun bola");
             return;
         }
 
-        if (asal == -1) break;
-
-        cout << "\nPilih tabung tujuan: ";
-        cin >> tujuan;
-
-        asal--;
-        tujuan--;
-
-        if (asal < 0 || asal >= jumlahTabung || tujuan < 0 || tujuan >= jumlahTabung) {
-            cout << "Input tabung tidak valid!\n";
-            continue;
+        if (asal == -1)
+        {
+            return;
         }
 
-        pindah(asal, tujuan);
+        if (asal < 1 || asal > jumlahTabung)
+        {
+            cout << "Tabung asal hanya ada 1-4\n";
+            continue;
+        }
+        break;
+    }
+
+    tujuan = ValidasiInput(1, jumlahTabung, "\nPilih tabung tujuan: ");
+
+    if (asal == tujuan)
+    {
+        cout << "Tabung asal dan tujuan tidak boleh sama!";
+        continue;
+    }
 
     } while (true);
 }
