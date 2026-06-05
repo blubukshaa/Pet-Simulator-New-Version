@@ -52,10 +52,15 @@ struct teman{
     string nama;
     int friendship;
     int energi;
-    string hobiFavorit;
     int mainHariIni;
 
     teman* next;
+};
+
+struct RelasiTeman{
+    string nama;
+    string koneksi[5];
+    int jumlahKoneksi;
 };
 
 int ValidasiInput(int min, int max, string pesan) {
@@ -816,6 +821,36 @@ void gamePenaltyShoot(pet &p, aktivitas* &head)
 
 
 //Fitur teman main
+// Daftar teman (graph)
+const int JUMLAH_TEMAN = 10;
+
+string semuaTeman[JUMLAH_TEMAN] = {
+    "Snow",
+    "Choco",
+    "Boba",
+    "Luna",
+    "Mochi",
+    "Berry",
+    "Luka",
+    "Maple",
+    "Peanut",
+    "Oreo"
+};
+
+bool relasi[JUMLAH_TEMAN][JUMLAH_TEMAN] = {
+ //Sn Ch Bo Lu Mo Be Lk Ma Pe Or
+  {0,1,0,1,0,0,0,0,0,0}, // Snow
+  {1,0,1,0,1,0,0,0,0,0}, // Choco
+  {0,1,0,0,0,1,0,0,0,0}, // Boba
+  {1,0,0,0,0,0,1,0,0,0}, // Luna
+  {0,1,0,0,0,0,0,1,0,0}, // Mochi
+  {0,0,1,0,0,0,1,1,0,0}, // Berry
+  {0,0,0,1,0,1,0,0,1,0}, // Luka
+  {0,0,0,0,1,1,0,0,0,1}, // Maple
+  {0,0,0,0,0,0,1,0,0,1}, // Peanut
+  {0,0,0,0,0,0,0,1,1,0}  // Oreo
+};
+
 // Cek apakah sudah berteman
 bool SudahBerteman(teman* head, string nama){
 
@@ -846,32 +881,90 @@ void TambahTeman(teman* &head, string nama){
 // Cari teman
 void CariTeman(teman* &head){
 
-    string namaTeman[5] = {
-        "Choco",
-        "Snow",
-        "Boba",
-        "Luna",
-        "Mochi"
-    };
+    // Jika belum punya teman, hanya bisa ketemu starter
+    if(head == NULL){
 
-    int index = rand() % 5;
+        string starter[3] = {
+            "Snow",
+            "Luka",
+            "Choco"
+        };
 
-    cout << "\nKamu bertemu " << namaTeman[index] << "!\n";
+        int index = rand() % 3;
 
-    if(SudahBerteman(head, namaTeman[index])){
-        cout << "Kamu sudah berteman dengan " << namaTeman[index] << "!\n";
+        cout << "\nKamu bertemu " << starter[index] << "!\n";
+        cout << "1. Ajak Berteman\n";
+        cout << "2. Kembali\n";
+
+        int pilih = ValidasiInput(1,2,"Pilihan: ");
+
+        if(pilih == 1){
+            TambahTeman(head, starter[index]);
+            cout << starter[index] << " sekarang menjadi temanmu!\n";
+        }
         return;
     }
 
+    string kandidat[JUMLAH_TEMAN];
+    int jumlah = 0;
+
+    teman* temp = head;
+
+    while (temp){
+        int idxTeman = -1;
+
+        // Cari index teman di graph
+        for (int i = 0; i < JUMLAH_TEMAN; i++){
+            if (semuaTeman[i] == temp->nama){
+                idxTeman = i;
+                break;
+            }
+        }
+
+        // Menambah semua relasi teman
+        if(idxTeman != -1){
+            for(int i = 0; i < JUMLAH_TEMAN; i++){
+                if(relasi[idxTeman][i]){
+                    if(!SudahBerteman(head, semuaTeman[i])){
+                        bool sudahMasuk = false;
+
+                        for (int j = 0; j < jumlah; j++){
+                            if (kandidat[j] == semuaTeman[i]){
+                                sudahMasuk = true;
+                                break;
+                            }
+                        }
+
+                        if (!sudahMasuk){
+                            kandidat[jumlah] =
+                                semuaTeman[i];
+
+                            jumlah++;
+                        }
+                    }
+                }
+            }
+        }
+        temp = temp->next;
+    }
+
+    if(jumlah == 0){
+
+        cout << "\nTidak ada teman baru yang bisa ditemukan.\n";
+        return;
+    }
+
+    int index = rand() % jumlah;
+
+    cout << "\nKamu bertemu " << kandidat[index] << "!\n";
     cout << "1. Ajak Berteman\n";
     cout << "2. Kembali\n";
 
-    int pilih = ValidasiInput(1, 2, "Pilihan: ");
+    int pilih = ValidasiInput(1,2,"Pilihan: ");
 
-    if (pilih == 1){
-        TambahTeman(head, namaTeman[index]);
-
-        cout << namaTeman[index] << " sekarang menjadi temanmu!\n";
+    if( pilih == 1){
+        TambahTeman(head, kandidat[index]);
+        cout << kandidat[index] << " sekarang menjadi temanmu!\n";
     }
 }
 
@@ -1249,7 +1342,7 @@ void EventAjakBermain(pet &p, teman* head){
         cout << "Energi -10\n";
     }
     else {
-        temp->friendship -= 2;
+        temp->friendship -= 1;
 
         if (temp->friendship < 0)
             temp->friendship = 0;
@@ -1259,8 +1352,79 @@ void EventAjakBermain(pet &p, teman* head){
     }
 }
 
+// Event mengenalkan ke teman baru
+void EventKenalanTeman(teman* &head){
+
+    if(head == NULL)
+        return;
+
+    int jumlahTeman = 0;
+    teman* temp = head;
+
+    while (temp){
+        jumlahTeman++;
+        temp = temp->next;
+    }
+
+    int target = rand() % jumlahTeman;
+
+    temp = head;
+
+    for (int i = 0; i < target; i++)
+        temp = temp->next;
+
+    // cari index teman di graph
+    int idx = -1;
+
+    for (int i = 0; i < JUMLAH_TEMAN; i++){
+        if (semuaTeman[i] == temp->nama){
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx == -1)
+        return;
+
+    // cari kandidat yang belum berteman
+    string kandidat[10];
+    int jumlah = 0;
+
+    for (int i = 0; i < JUMLAH_TEMAN; i++){
+
+        if (relasi[idx][i] && !SudahBerteman(head, semuaTeman[i])){
+            kandidat[jumlah++] = semuaTeman[i];
+        }
+    }
+
+    if (jumlah == 0)
+        return;
+
+    int pilihTeman = rand() % jumlah;
+
+    cout << "\n=== EVENT PERTEMANAN ===\n";
+    cout << temp->nama << " mengenalkanmu kepada " << kandidat[pilihTeman] << "!\n";
+
+    cout << "1. Berkenalan\n";
+    cout << "2. Tolak\n";
+
+    int pilih = ValidasiInput(1,2,"Pilihan: ");
+
+    if (pilih == 1){
+        TambahTeman(head, kandidat[pilihTeman]);
+        cout << kandidat[pilihTeman] << " sekarang menjadi temanmu!\n";
+    }
+    else {
+        temp->friendship -= 2;
+
+        if (temp->friendship < 0)
+            temp->friendship = 0;
+        cout << temp->nama << " sedikit kecewa.\n";
+    }
+}
+
 // Fungsi cek event acak setiap main
-void CekEventTeman(pet &p, teman* head){
+void CekEventTeman(pet &p, teman* &head){
 
     if(head == NULL)
         return;
@@ -1272,7 +1436,7 @@ void CekEventTeman(pet &p, teman* head){
 
     p.cooldownEvent = 0;
 
-    int event = rand() % 4;
+    int event = rand() % 5;
 
     switch (event){
 
@@ -1291,10 +1455,14 @@ void CekEventTeman(pet &p, teman* head){
         case 3:
             EventAjakBermain(p, head);
             break;
+
+        case 4:
+            EventKenalanTeman(head);
+            break;
     }
 }
 
-// fungsi Main
+// fungsi Bermain
 void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     int pilih;
     Skill* kelincahan = CariSkill(skillRoot,"Kelincahan");
@@ -1325,16 +1493,19 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     teman* temanDipilih = NULL;
 
     if (ajakTeman == 'y' || ajakTeman == 'Y'){
-    temanDipilih = PilihTeman(daftarTeman);
-    
-    if (temanDipilih == NULL)
-        return;
 
-    if (temanDipilih->energi < 20){
+    temanDipilih = PilihTeman(daftarTeman);
+
+    if (temanDipilih == NULL){
+        cout << "Tidak jadi mengajak teman. Bermain sendiri.\n";
+    }
+    else if (temanDipilih->energi < 20){
         cout << temanDipilih->nama << " terlalu lelah bermain.\n";
-        return;
+        cout << p.nama_pet << " bermain sendiri.\n";
+
+        temanDipilih = NULL;
     }
-    }
+}
 
     if (pilih == 1) {
         if (p.energi < 20) {
@@ -1930,7 +2101,7 @@ int main() {
             case 11:
                 if (CekStatusPenuh(myPet)){
                     char konfirmasi;
-                    cout << "\nStatus pet sudah penuh, Apakah anda ingin melepas pet ke alam bebas? (y/n): ";
+                    cout << "\nStatus pet sudah penuh, apakah Anda ingin melepas pet ke alam bebas? (y/n): ";
                     cin >> konfirmasi;
 
                     if (konfirmasi == 'y' || konfirmasi == 'Y'){
@@ -1945,7 +2116,7 @@ int main() {
                         InisialisasiPetBaru(myPet);
                     }
                     else {
-                        cout << "Pet tetap dirawat. Lanjutkan rawat pet-mu dengan baik ya!" << endl;
+                        cout << "Pet tetap dirawat. Lanjutkan merawat pet-mu dengan baik ya!" << endl;
                     }
                 }
                 else {
