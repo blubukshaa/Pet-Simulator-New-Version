@@ -723,6 +723,98 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
     } while (true);
 }
 
+//game main bola
+void gamePenaltyShoot(pet &p, aktivitas* &head)
+{
+    int gol = 0;
+
+    cout << "\n=== PENALTY SHOOT ===\n";
+
+    for(int ronde = 1; ronde <= 5; ronde++)
+    {
+        int tendangan;
+
+        cout << "\n=== Tendangan ke-" << ronde << " ===\n";
+        cout << "1. Kiri\n";
+        cout << "2. Tengah\n";
+        cout << "3. Kanan\n";
+
+        while(true)
+        {
+            cout << "Pilih arah tendangan: ";
+            cin >> tendangan;
+
+            if(cin.fail())
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
+                cout << "Input harus berupa angka!\n";
+            }
+            else if(tendangan < 1 || tendangan > 3)
+            {
+                cout << "Pilihan harus 1, 2, atau 3!\n";
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        int kiper = rand() % 3 + 1;
+
+        cout << "\nKiper melompat ke ";
+
+        if(kiper == 1)
+            cout << "Kiri";
+        else if(kiper == 2)
+            cout << "Tengah";
+        else
+            cout << "Kanan";
+
+        cout << "!\n";
+
+        if(tendangan == kiper)
+        {
+            cout << "Bola ditangkap kiper!\n";
+        }
+        else
+        {
+            cout << "GOOOOL!\n";
+            gol++;
+        }
+        tendangan = ValidasiInput(1, 5, "Pilihan: ");
+    }
+
+    int bonusKoin = gol * 10;
+    int bonusBahagia = gol * 5;
+
+    p.koin += bonusKoin;
+    p.bahagia += bonusBahagia;
+    p.energi -= 10;
+
+    if(p.bahagia > 100)
+        p.bahagia = 100;
+
+    if(p.energi < 0)
+        p.energi = 0;
+
+    cout << "\n=====================\n";
+    cout << "Total Gol : " << gol << "/5\n";
+
+    cout << "\nReward:\n";
+    cout << "+" << bonusKoin << " Koin\n";
+    cout << "+" << bonusBahagia << " Bahagia\n";
+    cout << "-10 Energi\n";
+
+    TambahAktivitas(
+        head,
+        "Bermain Penalty Shoot (" +
+        to_string(gol) +
+        " gol)"
+    );
+}
+
+
 //Fitur teman main
 // Cek apakah sudah berteman
 bool SudahBerteman(teman* head, string nama){
@@ -1218,7 +1310,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     cout << "\n=== PILIH AKTIVITAS MAIN ===\n";
     cout << "Energi saat ini: " << p.energi << endl;
     cout << "1. Main susun bola (+50 koin, +35 bahagia, -20 energi)\n";
-    cout << "2. Jalan-jalan (+20 koin, +20 bahagia, -15 energi)\n";
+    cout << "2. Main bola (+20 koin, +20 bahagia, -7 energi)\n";
     cout << "3. Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
     cout << "4. Kembali\n";
     pilih = ValidasiInput(1, 4, "Pilihan: ");
@@ -1254,7 +1346,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     }
     else if (pilih == 2) {
         if (p.energi < 15) {
-            cout << p.nama_pet << " terlalu lelah untuk jalan-jalan!\n";
+            cout << p.nama_pet << " terlalu lelah untuk bermain bola!\n";
             return;
         }
         p.koin += 20;
