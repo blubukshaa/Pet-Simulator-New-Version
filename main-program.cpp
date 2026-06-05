@@ -478,7 +478,7 @@ void UnlockSkill(Skill* root, string nama, pet &p)
     }
 
     if(p.skillPoint < 3){
-        cout << "Skill Point tidak cukup!\n";
+        cout << "Skill Poin tidak cukup!\n";
         return;
     }
 
@@ -670,7 +670,7 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
         cout << "+" << bonusKoin << " Koin\n";
         cout << "+" << bonusBahagia << " Bahagia\n";
         cout << "-" << energiHilang << " Energi\n";
-        cout << "+1 Skill Point\n";
+        cout << "+1 Skill Poin\n";
 
         cout << "\nStatus Setelah Bermain:\n";
         cout << "Energi sekarang    : " << p.energi << endl;
@@ -1954,7 +1954,7 @@ int main() {
         cout << "7. \U0001F3BE Main\n";
         cout << "8. \U0001F4DC Lihat Aktivitas\n";
         cout << "9. \U0001F465 Teman\n";
-        cout << "10. \U0001F31F Skill Tree\n";
+        cout << "10. \U0001F31F Skill\n";
 
     if (CekStatusPenuh(myPet)) {
         cout << "11. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
@@ -1979,7 +1979,7 @@ int main() {
                 cout << "\U000026A1 Energi  : " << myPet.energi << endl;
                 cout << "\U0001F4B0 Koin    : " << myPet.koin << endl;
                 cout << "\U0001F489 Kesehatan : " << myPet.kesehatan << endl;
-                cout << "\U0001F31F Skill Point : " << myPet.skillPoint << endl;
+                cout << "\U0001F31F Skill Poin : " << myPet.skillPoint << endl;
                 cout << "Mood : " << CekMood(myPet) << endl;
                 break;
 
@@ -2062,7 +2062,7 @@ int main() {
 
                 TampilkanSkill(skillRoot);
 
-                cout << "\nSkill Point: "
+                cout << "\nSkill Poin: "
                     << myPet.skillPoint << endl;
 
                 cout << "\n1. Kelincahan\n";
