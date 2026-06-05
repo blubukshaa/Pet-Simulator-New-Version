@@ -77,6 +77,17 @@ head = baru;
 
 Skill* CariSkill(Skill* root, string nama);
 
+void PushTransaksi(transaksi* &top, string makanan, int jumlah, int total){
+    transaksi* baru = new transaksi;
+
+    baru->namaMakanan = makanan;
+    baru->jumlah = jumlah;
+    baru->totalHarga = total;
+
+    baru->next = top;
+    top = baru;
+}
+
 void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
     int pilih, jumlah;
     string namaMakanan;
@@ -118,19 +129,19 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
     switch(pilih){
         case 1:
             namaMakanan = "Apel";
-            harga = 5;
+            harga = hargaApel;
             break;
 
         case 2:
             namaMakanan = "Daging";
-            harga = 15;
+            harga = hargaDaging;
             break;
 
         case 3:
             namaMakanan = "Roti";
-            harga = 7;
+            harga = hargaRoti;
             break;
-    }
+}
 
     int totalHarga = harga * jumlah;
 
@@ -141,7 +152,7 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
             p.apel += jumlah;
         else if (pilih == 2)
             p.daging += jumlah;
-        else (pilih == 3)
+        else 
             p.roti += jumlah;
 
         PushTransaksi(
@@ -168,17 +179,6 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
     else{
         cout << "Koin tidak cukup!\n";
     }
-}
-
-void PushTransaksi(transaksi* &top, string makanan, int jumlah, int total){
-    transaksi* baru = new transaksi;
-
-    baru->namaMakanan = makanan;
-    baru->jumlah = jumlah;
-    baru->totalHarga = total;
-
-    baru->next = top;
-    top = baru;
 }
 
 // Read
@@ -781,8 +781,6 @@ void InisialisasiPetBaru(pet &p) {
     cout << "Koin kamu tetap: " << p.koin << endl;
 }
 
-
-
 // fitur Main
 int main() {
     pet myPet;
@@ -817,6 +815,7 @@ int main() {
     myPet.energi = rand() % 21 + 40;
 
     myPet.skillPoint = 0;
+    myPet.koin = 50;
 
     myPet.apel = 0;
     myPet.daging = 0;
@@ -845,7 +844,7 @@ int main() {
 
     if (CekStatusPenuh(myPet)) {
         cout << "8. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
-        cout << "8. Keluar\n";
+        cout << "9. Keluar\n";
     }
     else {
         cout << "9. Keluar\n";
@@ -874,7 +873,7 @@ int main() {
                 break;
 
             case 3:
-                BeliMakanan(myPet, head, skillRoot);
+                BeliMakanan(myPet, head, skillRoot, top);
                 UpdateStatus(myPet);
                 break;
 
