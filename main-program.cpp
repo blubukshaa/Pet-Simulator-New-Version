@@ -87,6 +87,7 @@ head = baru;
 }
 
 Skill* CariSkill(Skill* root, string nama);
+string CekMood(pet &p);
 
 void PushTransaksi(transaksi* &top, string makanan, int jumlah, int total){
     transaksi* baru = new transaksi;
@@ -1387,6 +1388,16 @@ void UpdateStatus(pet &p){
     if (p.kesehatan < 0) p.kesehatan = 0;
 }
 
+string CekMood(pet &p){
+    if (p.kesehatan < 40)   return "Sakit";
+    if (p.lapar >= 80)      return "Sangat Lapar";
+    if (p.energi < 20)      return "Mengantuk";
+    if (p.lapar > 70)       return "Lapar";
+    if (p.bahagia < 30)     return "Sedih";
+    if (p.bahagia >= 80)    return "Sangat Bahagia";
+    return "Senang";
+}
+
 void InisialisasiPetBaru(pet &p) {
     int pilih_jenis_pet;
 
@@ -1706,6 +1717,7 @@ int main() {
                 cout << "\U0001F4B0 Koin    : " << myPet.koin << endl;
                 cout << "\U0001F489 Kesehatan : " << myPet.kesehatan << endl;
                 cout << "\U0001F31F Skill Point : " << myPet.skillPoint << endl;
+                cout << "Mood : " << CekMood(myPet) << endl;
                 break;
 
             case 2:
