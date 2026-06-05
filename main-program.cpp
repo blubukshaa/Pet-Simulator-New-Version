@@ -12,7 +12,6 @@ const int kapasitas = 3;
 string tabung [jumlahTabung][kapasitas];
 int top [jumlahTabung];
 
-
 struct pet{
     string jenis;
     string nama_pet;
@@ -26,6 +25,7 @@ struct pet{
     int daging;
     int roti;
     int kesehatan;
+    int cooldownEvent;
 };
 
 struct aktivitas{
@@ -46,6 +46,16 @@ struct transaksi{
     int jumlah;
     int totalHarga;
     transaksi* next;
+};
+
+struct teman{
+    string nama;
+    int friendship;
+    int energi;
+    string hobiFavorit;
+    int mainHariIni;
+
+    teman* next;
 };
 
 int ValidasiInput(int min, int max, string pesan) {
@@ -173,9 +183,9 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
         cout << "Sisa koin : " << p.koin << endl;
 
         cout << "\n=== STOK MAKANAN ===" << endl;
-        cout << "🍎 Apel   : " << p.apel << endl;
-        cout << "🍖 Daging : " << p.daging << endl;
-        cout << "🍞 Roti   : " << p.roti << endl;
+        cout << "\U0001F356 Apel   : " << p.apel << endl;
+        cout << "\U0001F35E Daging : " << p.daging << endl;
+        cout << "\U0001F35E Roti   : " << p.roti << endl;
     }
     else{
         cout << "Koin tidak cukup!\n";
@@ -596,7 +606,7 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
         if (p.bahagia > 100) p.bahagia = 100;
         if (p.energi < 0) p.energi = 0;
 
-        cout << "\n🎉 Selamat Kamu Menang!\n";
+        cout << "\n\U0001F389 Selamat Kamu Menang!\n";
         cout << "+" << bonusKoin << " Koin\n";
         cout << "+" << bonusBahagia << " Bahagia\n";
         cout << "-" << energiHilang << " Energi\n";
@@ -658,8 +668,487 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
     } while (true);
 }
 
+//Fitur teman main
+// Cek apakah sudah berteman
+bool SudahBerteman(teman* head, string nama){
+
+    while (head){
+        if (head->nama == nama)
+            return true;
+
+        head = head->next;
+    }
+
+    return false;
+}
+
+// Tambah teman
+void TambahTeman(teman* &head, string nama){
+
+    teman* baru = new teman;
+
+    baru->nama = nama;
+    baru->friendship = 0;
+    baru->energi = 100;
+    baru->mainHariIni = 0;
+
+    baru->next = head;
+    head = baru;
+}
+
+// Cari teman
+void CariTeman(teman* &head){
+
+    string namaTeman[5] = {
+        "Choco",
+        "Snow",
+        "Boba",
+        "Luna",
+        "Mochi"
+    };
+
+    int index = rand() % 5;
+
+    cout << "\nKamu bertemu " << namaTeman[index] << "!\n";
+
+    if(SudahBerteman(head, namaTeman[index])){
+        cout << "Kamu sudah berteman dengan " << namaTeman[index] << "!\n";
+        return;
+    }
+
+    cout << "1. Ajak Berteman\n";
+    cout << "2. Kembali\n";
+
+    int pilih = ValidasiInput(1, 2, "Pilihan: ");
+
+    if (pilih == 1){
+        TambahTeman(head, namaTeman[index]);
+
+        cout << namaTeman[index] << " sekarang menjadi temanmu!\n";
+    }
+}
+
+// Status friendship
+string StatusFriendship(int friendship){
+
+    if (friendship <= 25)
+        return "Kenalan";
+
+    if (friendship <= 50)
+        return "Teman";
+
+    if (friendship <= 75)
+        return "Sahabat";
+
+    return "Best Friend";
+}
+
+// Batasan bonus friendship per hari
+int BonusFriendship(teman &t){
+
+    if (t.mainHariIni == 0)
+        return 3;
+
+    if (t.mainHariIni == 1)
+        return 2;
+
+    if (t.mainHariIni == 2)
+        return 1;
+
+    return 0;
+}
+
+// Bonus bahagia
+int BonusBahagiaTeman(int friendship){
+
+    if (friendship <= 25)
+        return 2;
+
+    if (friendship <= 50)
+        return 5;
+
+    if (friendship <= 75)
+        return 7;
+
+    return 10;
+}
+
+void ResetMainHariIni(teman* head){
+
+    while(head){
+        head->mainHariIni = 0;
+        head = head->next;
+    }
+}
+
+// Lihat teman
+void LihatTeman(teman* head){
+
+    cout << "\n=== DAFTAR TEMAN ===\n";
+
+    if (head == NULL){
+
+        cout << "Belum memiliki teman.\n";
+        return;
+    }
+
+    int nomor = 1;
+
+    while (head){
+        cout << nomor << ". " << head->nama << endl;
+        cout << "   Friendship : " << head->friendship << endl;
+        cout << "   Status     : " << StatusFriendship(head->friendship) << endl;
+        cout << "   Energi     : " << head->energi << endl;
+        cout << "---------------------\n";
+
+        nomor++;
+        head = head->next;
+    }
+}
+
+// Reset energi teman saat pet tidur
+void ResetEnergiTeman(teman* head){
+    
+    while (head){
+        head->energi = 100;
+        head = head->next;
+    }
+}
+
+// Pilih teman
+teman* PilihTeman(teman* head){
+
+    if (head == NULL){
+        cout << "Belum memiliki teman!\n";
+        return NULL;
+    }
+
+    cout << "\n=== PILIH TEMAN ===\n";
+
+    int nomor = 1;
+    teman* temp = head;
+
+    while (temp){
+        cout << nomor << ". " << temp->nama << " (" << StatusFriendship(temp->friendship) << ")" << " | Energi: " << temp->energi;
+
+if (temp->energi < 20)
+    cout << " [LELAH]";
+
+cout << endl;
+
+        nomor++;
+        temp = temp->next;
+    }
+
+    int pilih = ValidasiInput(1, nomor-1, "Pilih teman: ");
+
+    temp = head;
+
+    for (int i=1; i < pilih ;i++)
+        temp = temp->next;
+
+    return temp;
+}
+
+// Menu teman
+void MenuTeman(teman* &daftarTeman){
+
+    int pilih;
+
+    do{
+
+        cout << "\n=== MENU TEMAN ===\n";
+
+        cout << "1. Lihat Teman\n";
+        cout << "2. Cari Teman Baru\n";
+        cout << "3. Kembali\n";
+
+        pilih = ValidasiInput(1, 3, "Pilihan: ");
+
+        switch(pilih){
+
+            case 1:
+                LihatTeman(daftarTeman);
+                break;
+
+            case 2:
+                CariTeman(daftarTeman);
+                break;
+        }
+
+    }
+    while (pilih != 3);
+}
+
+// EVENT DENGAN TEMAN
+// Event jatuh saat main
+void EventTemanTerjatuh(teman* head){
+
+    if (head == NULL)
+        return;
+
+    int jumlah = 0;
+    teman* temp = head;
+
+    while (temp){
+        jumlah++;
+        temp = temp->next;
+    }
+
+    int target = rand() % jumlah;
+
+    temp = head;
+
+    for (int i = 0; i < target; i++)
+        temp = temp->next;
+
+    cout << "\n\U000026A0 EVENT PERTEMANAN \U000026A0\n";
+    cout << temp->nama << " terjatuh saat bermain!\n";
+
+    cout << "1. Bantu dia\n";
+    cout << "2. Abaikan\n";
+
+    int pilih = ValidasiInput(1, 2, "Pilihan: ");
+
+    if (pilih == 1){
+        temp->friendship += 5;
+
+        if (temp->friendship > 100)
+            temp->friendship = 100;
+        cout << "Kamu membantu " << temp->nama << endl;
+        cout << "Friendship +5\n";
+    }
+    else {
+        temp->friendship -= 5;
+
+        if (temp->friendship < 0)
+            temp->friendship = 0;
+
+        cout << temp->nama << " kecewa padamu.\n";
+        cout << "Friendship -5\n";
+    }
+}
+
+// Event hadiah saat main
+void EventHadiah(teman* head){
+
+    if (head == NULL)
+        return;
+
+    int jumlah = 0;
+    teman* temp = head;
+
+    while (temp){
+        jumlah++;
+        temp = temp->next;
+    }
+
+    int target = rand() % jumlah;
+
+    temp = head;
+
+    for (int i = 0; i < target; i++)
+        temp = temp->next;
+
+    cout << "\n\U0001F381 EVENT PERTEMANAN \U0001F381\n";
+    cout << temp->nama << " memberimu hadiah!\n";
+
+    temp->friendship += 5;
+
+    if (temp->friendship > 100)
+        temp->friendship = 100;
+
+    cout << "Friendship +5\n";
+}
+
+// Event teman meminta makan
+void EventMintaMakanan(pet &p, teman* head){
+
+    if (head == NULL)
+        return;
+
+    int jumlah = 0;
+    teman* temp = head;
+
+    while (temp){
+        jumlah++;
+        temp = temp->next;
+    }
+
+    int target = rand() % jumlah;
+
+    temp = head;
+
+    for (int i = 0; i < target; i++)
+        temp = temp->next;
+
+    cout << "\n\U0001F34E EVENT PERTEMANAN \U0001F34E\n";
+    cout << temp->nama << " meminta makanan darimu.\n";
+
+    cout << "\n=== STOK MAKANAN ===\n";
+    cout << "\U0001F34E Apel   : " << p.apel << endl;
+    cout << "\U0001F356 Daging : " << p.daging << endl;
+    cout << "\U0001F35E Roti   : " << p.roti << endl;
+    cout << "\n1. Beri makanan\n";
+    cout << "2. Tolak\n";
+
+    int pilih = ValidasiInput(1, 2, "Pilihan: ");
+
+    if (pilih == 1){
+        cout << "\n=== PILIH MAKANAN ===\n";
+        cout << "1. \U0001F34E Apel (+3 Friendship)\n";
+        cout << "2. \U0001F356 Daging (+8 Friendship)\n";
+        cout << "3. \U0001F35E Roti (+5 Friendship)\n";
+
+        int makanan = ValidasiInput(1, 3, "Pilihan: ");
+
+        if (makanan == 1){
+            if(p.apel <= 0){
+                cout << "Apel habis!\n";
+                return;
+            }
+            p.apel--;
+
+            temp->friendship += 3;
+
+            cout << "Kamu memberikan apel kepada " << temp->nama << endl;
+            cout << "Friendship +3\n";
+        }
+        else if (makanan == 2){
+            if (p.daging <= 0){
+                cout << "Daging habis!\n";
+                return;
+            }
+            p.daging--;
+
+            temp->friendship += 8;
+
+            cout << "Kamu memberikan daging kepada " << temp->nama << endl;
+            cout << "Friendship +8\n";
+        }
+        else if (makanan == 3){
+            if (p.roti <= 0){
+                cout << "Roti habis!\n";
+                return;
+            }
+            p.roti--;
+
+            temp->friendship += 5;
+
+            cout << "Kamu memberikan roti kepada " << temp->nama << endl;
+            cout << "Friendship +5\n";
+        }
+        if (temp->friendship > 100)
+            temp->friendship = 100;
+    }
+    else {
+        temp->friendship -= 3;
+
+        if (temp->friendship < 0)
+            temp->friendship = 0;
+
+        cout << temp->nama << " terlihat kecewa.\n";
+        cout << "Friendship -3\n";
+    }
+}
+
+// Event teman mengajak main
+void EventAjakBermain(pet &p, teman* head){
+
+    if (head == NULL)
+        return;
+
+    int jumlah = 0;
+    teman* temp = head;
+
+    while (temp){
+        jumlah++;
+        temp = temp->next;
+    }
+
+    int target = rand() % jumlah;
+
+    temp = head;
+
+    for (int i = 0; i < target; i++)
+        temp = temp->next;
+
+    cout << "\n\U0001F3BE EVENT PERTEMANAN \U0001F3BE\n";
+    cout << temp->nama << " mengajakmu bermain.\n";
+
+    cout << "\n=== STATUS ENERGI ===\n";
+    cout << "Energi Pet : " << p.energi << endl;
+    cout << "Biaya Bermain : 10 Energi\n\n";
+    cout << "1. Terima ajakan\n";
+    cout << "2. Tolak\n";
+
+    int pilih = ValidasiInput(1, 2, "Pilihan: ");
+
+    if (pilih == 1){
+        if (p.energi < 10){
+            cout << "Energi tidak cukup untuk bermain!\n";
+            return;
+        }
+        p.energi -= 10;
+        p.bahagia += 5;
+
+        temp->friendship += 7;
+
+        if (temp->friendship > 100)
+            temp->friendship = 100;
+        cout << "Kalian bermain bersama!\n";
+        cout << "Friendship +7\n";
+        cout << "Bahagia +5\n";
+        cout << "Energi -10\n";
+    }
+    else {
+        temp->friendship -= 2;
+
+        if (temp->friendship < 0)
+            temp->friendship = 0;
+
+        cout << temp->nama << " terlihat sedikit sedih.\n";
+        cout << "Friendship -2\n";
+    }
+}
+
+// Fungsi cek event acak setiap main
+void CekEventTeman(pet &p, teman* head){
+
+    if(head == NULL)
+        return;
+
+    p.cooldownEvent++;
+
+    if(p.cooldownEvent < 3)
+        return;
+
+    p.cooldownEvent = 0;
+
+    int event = rand() % 4;
+
+    switch (event){
+
+        case 0:
+            EventTemanTerjatuh(head);
+            break;
+
+        case 1:
+            EventHadiah(head);
+            break;
+
+        case 2:
+            EventMintaMakanan(p, head);
+            break;
+
+        case 3:
+            EventAjakBermain(p, head);
+            break;
+    }
+}
+
 // fungsi Main
-void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
+void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     int pilih;
     Skill* kelincahan = CariSkill(skillRoot,"Kelincahan");
     Skill* sprint = CariSkill(skillRoot,"Sprint");
@@ -680,6 +1169,25 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
     pilih = ValidasiInput(1, 4, "Pilihan: ");
 
     if (pilih == 4) return;
+
+    char ajakTeman;
+
+    cout << "\nAjak teman bermain? (y/n): ";
+    cin >> ajakTeman;
+
+    teman* temanDipilih = NULL;
+
+    if (ajakTeman == 'y' || ajakTeman == 'Y'){
+    temanDipilih = PilihTeman(daftarTeman);
+    
+    if (temanDipilih == NULL)
+        return;
+
+    if (temanDipilih->energi < 20){
+        cout << temanDipilih->nama << " terlalu lelah bermain.\n";
+        return;
+    }
+    }
 
     if (pilih == 1) {
         if (p.energi < 20) {
@@ -732,7 +1240,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
 
     int peluang = rand() % 100;
 
-    if(peluang < 15) // 15%
+    if (peluang < 15) // 15%
     {
         cout << "\n " << p.nama_pet
             << " terkena flu!\n";
@@ -745,7 +1253,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
         );
     }
 
-    else if(peluang < 30) // 15%
+    else if (peluang < 30) // 15%
     {
         cout << "\n " << p.nama_pet
             << " terluka saat bermain!\n";
@@ -757,10 +1265,50 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
             "Terluka setelah bermain"
         );
     }
+
+    if (temanDipilih != NULL){
+
+    int bonusBahagia = BonusBahagiaTeman(temanDipilih->friendship);
+    int bonusFriend = BonusFriendship(*temanDipilih);
+
+    temanDipilih->friendship += bonusFriend;
+
+    if (temanDipilih->friendship > 100)
+        temanDipilih->friendship = 100;
+
+    temanDipilih->mainHariIni++;
+
+    temanDipilih->energi -= 15;
+
+    if (temanDipilih->energi < 0)
+        temanDipilih->energi = 0;
+
+    p.bahagia += bonusBahagia;
+
+    if (p.bahagia > 100)
+        p.bahagia = 100;
+
+    cout << "\n" << temanDipilih->nama << " bermain bersamamu!\n";
+
+    if (bonusFriend > 0){
+        cout << "Friendship +" << bonusFriend << endl;
+    }
+    else {
+        cout << "Bonus friendship harian sudah habis.\n";
+    }
+
+    cout << "Bonus Bahagia +" << bonusBahagia << endl;
+
+    cout << "Energi " << temanDipilih->nama << " sekarang: " << temanDipilih->energi << "/100\n";
+
+    if (temanDipilih->energi <= 30){
+        cout << "\U000026A0 " << temanDipilih->nama << " mulai kelelahan.\n";
+    }
+}
 }
 
 // Fungsi untuk update status pet setiap kali melakukan aktivitas
-void UpdateStatus(pet &p) {
+void UpdateStatus(pet &p){
 
     if (p.lapar < 100) {
         p.lapar += 1;
@@ -823,6 +1371,7 @@ void InisialisasiPetBaru(pet &p) {
     p.apel = 0;
     p.daging = 0;
     p.roti = 0;
+    p.cooldownEvent = 0;
 
     cout << "Pet baru berhasil dibuat!\n";
     cout << "Koin kamu tetap: " << p.koin << endl;
@@ -845,7 +1394,7 @@ int adj[jumlah_lokasi][jumlah_lokasi] =
 void TampilkanPetaLokasi()
 {
     cout << "\n========== PETA KOTA ==========\n";
-    cout << "🏠 Rumah <-> 🌳 Taman <-> 🏟 Arena <-> 🏥 Klinik <-> 🏪 Toko\n";
+    cout << "\U0001F3E0 Rumah <-> \U0001F333 Taman <-> \U0001F3DF Arena <-> \U0001F3E5 Klinik <-> \U0001F3EA Toko\n";
     cout << "================================\n";
 
     cout << "\nRepresentasi Graph:\n";
@@ -903,18 +1452,18 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
     }
 
         cout << "\n========== PETA KOTA ==========\n";
-    cout << "🏠 Rumah <-> 🌳 Taman <-> 🏟 Arena <-> 🏥 Klinik <-> 🏪 Toko\n";
+    cout << "\U0001F3E0 Rumah <-> \U0001F333 Taman <-> \U0001F3DF Arena <-> \U0001F3E5 Klinik <-> \U0001F3EA Toko\n";
     cout << "================================\n";
 
     cout << "Keterangan Lokasi:\n";
-    cout << "🏠 Rumah  : Tempat tidur pet\n";
-    cout << "🌳 Taman  : Cari item dan eksplorasi\n";
-    cout << "🏟 Arena  : Bermain mini game\n";
-    cout << "🏥 Klinik : Mengobati pet\n";
-    cout << "🏪 Toko   : Membeli makanan\n";
+    cout << "\U0001F3E0 Rumah  : Tempat tidur pet\n";
+    cout << "\U0001F333 Taman  : Cari item dan eksplorasi\n";
+    cout << "\U0001F3DF Arena  : Bermain mini game\n";
+    cout << "\U0001F3E5 Klinik : Mengobati pet\n";
+    cout << "\U0001F3EA Toko   : Membeli makanan\n";
     cout << "================================\n";
 
-    cout << "\n📍 Lokasi Saat Ini : "
+    cout << "\n\U0001F4CD Lokasi Saat Ini : "
         << namalokasi[posisi]
         << endl;
 
@@ -953,7 +1502,7 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
         "Jalan-jalan ke " + namalokasi[posisi]
     );
 
-    cout << "\n📍 Sekarang berada di "
+    cout << "\n\U0001F4CD Sekarang berada di "
          << namalokasi[posisi]
          << endl;
 
@@ -979,7 +1528,7 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
             {
                 posisi = 4;
 
-                cout << "\n📍 Sekarang berada di Toko\n";
+                cout << "\n\U0001F4CD Sekarang berada di Toko\n";
 
                 cout << "Gunakan menu Beli Makanan untuk berbelanja.\n";
             }
@@ -1018,6 +1567,7 @@ int main() {
     transaksi* top = NULL;
     Skill* skillRoot = BuatSkillTree();
     int posisi = 0; // Lokasi awal: Rumah
+    teman* daftarTeman = NULL;
 
     srand(time(0)); // Random poin awal pet
 
@@ -1052,6 +1602,8 @@ int main() {
     myPet.daging = 0;
     myPet.roti = 0;
 
+    myPet.cooldownEvent = 0;
+
     cout << "\nPet memiliki kondisi awal acak!\n";
     cout << "====================" << endl;
     cout << "Nama    : " << myPet.nama_pet << endl;
@@ -1066,21 +1618,22 @@ int main() {
         cout << "         \U0001F3AE PawPal        \n";
         cout << "=================================\n";
         cout << "1. \U0001F4CA Lihat Status\n";
-        cout << "2. 🗺 Lihat Peta Kota\n";
-        cout << "3. 🚶 Jalan-jalan\n";
+        cout << "2. \U0001F5FA Lihat Peta Kota\n";
+        cout << "3. \U0001F6B6 Jalan-jalan\n";
         cout << "4. \U0001F37D  Makan\n";
         cout << "5. \U0001F6D2 Beli Makanan\n";
         cout << "6. \U0001F634 Tidur\n";
         cout << "7. \U0001F3BE Main\n";
         cout << "8. \U0001F4DC Lihat Aktivitas\n";
-        cout << "9. 🌟 Skill Tree\n";
+        cout << "9. \U0001F465 Teman\n";
+        cout << "10. \U0001F31F Skill Tree\n";
 
     if (CekStatusPenuh(myPet)) {
-        cout << "10. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
-        cout << "11. Keluar\n";
+        cout << "11. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
+        cout << "12. Keluar\n";
     }
     else {
-        cout << "10. Keluar\n";
+        cout << "11. Keluar\n";
     }
 
     cout << "Pilihan: ";
@@ -1098,7 +1651,7 @@ int main() {
                 cout << "\U000026A1 Energi  : " << myPet.energi << endl;
                 cout << "\U0001F4B0 Koin    : " << myPet.koin << endl;
                 cout << "\U0001F489 Kesehatan : " << myPet.kesehatan << endl;
-                cout << "⭐ Skill Point : " << myPet.skillPoint << endl;
+                cout << "\U0001F31F Skill Point : " << myPet.skillPoint << endl;
                 break;
 
             case 2:
@@ -1108,8 +1661,7 @@ int main() {
             case 3:
             jalanjalan(posisi, myPet, head);
 
-            if(posisi == 1)
-            {
+            if(posisi == 1){
                 CariItem(myPet, head);
             }
 
@@ -1125,7 +1677,8 @@ int main() {
             case 5:
                 if(posisi != 4)
                 {
-                    cout << "Kamu harus berada di Toko untuk membeli makanan!\n";                        break;
+                    cout << "Kamu harus berada di Toko untuk membeli makanan!\n";                        
+                    break;
                 }
 
                 BeliMakanan(myPet, head, skillRoot, top);
@@ -1140,7 +1693,8 @@ int main() {
                 }
 
                 Tidur(myPet, head);
-                UpdateStatus(myPet);
+                ResetEnergiTeman(daftarTeman);
+                ResetMainHariIni(daftarTeman);
                 break;
 
             case 7:
@@ -1151,7 +1705,7 @@ int main() {
                     break;
                 }
 
-                Main(myPet, head, skillRoot);
+                Main(myPet, head, skillRoot, daftarTeman);
 
                 Skill* kecerdasan = CariSkill(skillRoot, "Kecerdasan");
 
@@ -1161,6 +1715,7 @@ int main() {
                     cout << "Bonus Kecerdasan: +1 Skill Point!\n";
                 }
 
+                CekEventTeman(myPet, daftarTeman);
                 UpdateStatus(myPet);
                 break;
             }
@@ -1170,6 +1725,10 @@ int main() {
                 break;
 
             case 9:
+                MenuTeman(daftarTeman);
+                break;
+
+            case 10:
                 cout << "\n=== SKILL TREE ===\n";
 
                 TampilkanSkill(skillRoot);
@@ -1210,7 +1769,7 @@ int main() {
 
                 break;
 
-            case 10:
+            case 11:
                 if (CekStatusPenuh(myPet)){
                     char konfirmasi;
                     cout << "\nStatus pet sudah penuh, Apakah anda ingin melepas pet ke alam bebas? (y/n): ";
@@ -1237,7 +1796,7 @@ int main() {
                 }
                 break;
 
-            case 11: 
+            case 12: 
             jalan = false;
             cout << "Anda telah keluar dari game. Terima kasih telah memainkan PawPal ^-^\n";
             break;
