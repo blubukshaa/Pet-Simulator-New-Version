@@ -25,6 +25,7 @@ struct pet{
     int apel;
     int daging;
     int roti;
+    int kesehatan;
 };
 
 struct aktivitas{
@@ -713,30 +714,60 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot) {
     if (p.lapar > 100) p.lapar = 100;
 
     cout << p.nama_pet << " selesai bermain!\n";
+
+    int peluang = rand() % 100;
+
+    if(peluang < 15) // 15%
+    {
+        cout << "\n " << p.nama_pet
+            << " terkena flu!\n";
+
+        p.kesehatan -= 10;
+
+        TambahAktivitas(
+            head,
+            "Terkena flu setelah bermain"
+        );
+    }
+
+    else if(peluang < 30) // 15%
+    {
+        cout << "\n " << p.nama_pet
+            << " terluka saat bermain!\n";
+
+        p.kesehatan -= 15;
+
+        TambahAktivitas(
+            head,
+            "Terluka setelah bermain"
+        );
+    }
 }
 
 // Fungsi untuk update status pet setiap kali melakukan aktivitas
 void UpdateStatus(pet &p) {
 
-    // Lapar (naik tiap pilih menu kalau belum 0)
-    if (p.lapar > 0) {
+    if (p.lapar < 100) {
         p.lapar += 1;
     }
 
-    // Energi (turun tiap pilih menu kalau belum 100)
-    if (p.energi < 100) {
+    if (p.energi > 0) {
         p.energi -= 1;
     }
 
-    // Bahagia (turun tiap pilih menu kalau belum 100)
-    if (p.bahagia < 100) {
+    if (p.bahagia > 0) {
         p.bahagia -= 1;
     }
 
-    // Batas
     if (p.lapar > 100) p.lapar = 100;
     if (p.energi < 0) p.energi = 0;
     if (p.bahagia < 0) p.bahagia = 0;
+
+    if (p.lapar >= 80 && p.energi <= 20) {
+        p.kesehatan -= 5;
+    }
+
+    if (p.kesehatan < 0) p.kesehatan = 0;
 }
 
 void InisialisasiPetBaru(pet &p) {
@@ -771,6 +802,7 @@ void InisialisasiPetBaru(pet &p) {
     p.lapar = rand() % 21 + 40;
     p.bahagia = rand() % 21 + 40;
     p.energi = rand() % 21 + 40;
+    p.kesehatan = 100;
 
     // Reset inventory
     p.apel = 0;
@@ -781,6 +813,188 @@ void InisialisasiPetBaru(pet &p) {
     cout << "Koin kamu tetap: " << p.koin << endl;
 }
 
+const int jumlah_lokasi = 5;
+
+string namalokasi[jumlah_lokasi] =
+{"Rumah", "Taman", "Arena", "Klinik", "Toko"};
+
+int adj[jumlah_lokasi][jumlah_lokasi] = 
+{
+    {0, 1, 0, 0, 0}, // Rumah
+    {1, 0, 1, 0, 0}, // Taman
+    {0, 1, 0, 1, 0}, // Arena
+    {0, 0, 1, 0, 1}, // klinik
+    {0, 0, 0, 1, 0}  // Toko
+}; 
+
+void TampilkanPetaLokasi()
+{
+    cout << "\n========== PETA KOTA ==========\n";
+    cout << "🏠 Rumah <-> 🌳 Taman <-> 🏟 Arena <-> 🏥 Klinik <-> 🏪 Toko\n";
+    cout << "================================\n";
+
+    cout << "\nRepresentasi Graph:\n";
+
+    for (int i = 0; i < jumlah_lokasi; i++)
+    {
+        cout << namalokasi[i] << "-> ";
+        bool pertama = true;
+
+        for (int j = 0; j < jumlah_lokasi; j++)
+        {
+            if (adj[i][j] == 1)
+            {
+                if (!pertama) cout << ", ";
+
+                cout << namalokasi[j];
+                pertama = false;
+            }
+        }
+        cout << endl;
+    }
+    cout << "==============================\n";
+}
+
+void Klinik(pet &p, aktivitas* &head)
+{
+    if(p.koin < 20)
+    {
+        cout << "Koin tidak cukup!\n";
+        return;
+    }
+
+    p.koin -= 20;
+    p.kesehatan += 30;
+
+    if(p.kesehatan > 100)
+        p.kesehatan = 100;
+
+    TambahAktivitas(head,"Berobat ke klinik");
+
+    cout << "\nPet berhasil diobati!\n";
+    cout << "-20 Koin\n";
+    cout << "+30 Kesehatan\n";
+}
+
+void jalanjalan(int &posisi, pet &p, aktivitas* &head)
+{
+    int tujuan[10];
+    int jumlah = 0;
+
+    if(p.energi < 10)
+    {
+        cout << "Energi tidak cukup untuk jalan-jalan!\n";
+        return;
+    }
+
+        cout << "\n========== PETA KOTA ==========\n";
+    cout << "🏠 Rumah <-> 🌳 Taman <-> 🏟 Arena <-> 🏥 Klinik <-> 🏪 Toko\n";
+    cout << "================================\n";
+
+    cout << "Keterangan Lokasi:\n";
+    cout << "🏠 Rumah  : Tempat tidur pet\n";
+    cout << "🌳 Taman  : Cari item dan eksplorasi\n";
+    cout << "🏟 Arena  : Bermain mini game\n";
+    cout << "🏥 Klinik : Mengobati pet\n";
+    cout << "🏪 Toko   : Membeli makanan\n";
+    cout << "================================\n";
+
+    cout << "\n📍 Lokasi Saat Ini : "
+        << namalokasi[posisi]
+        << endl;
+
+    cout << "\nTujuan tersedia:\n";
+
+    for(int i = 0; i < jumlah_lokasi; i++)
+    {
+        if(adj[posisi][i] == 1)
+        {
+            jumlah++;
+
+            cout << jumlah
+                 << ". "
+                 << namalokasi[i]
+                 << endl;
+
+            tujuan[jumlah] = i;
+        }
+    }
+
+    int pilih =
+        ValidasiInput(1, jumlah,
+                      "Pilih tujuan: ");
+
+    posisi = tujuan[pilih];
+
+    p.energi -= 10;
+    p.bahagia += 10;
+    p.koin += 10;
+
+    if(p.bahagia > 100)
+        p.bahagia = 100;
+
+    TambahAktivitas(
+        head,
+        "Jalan-jalan ke " + namalokasi[posisi]
+    );
+
+    cout << "\n📍 Sekarang berada di "
+         << namalokasi[posisi]
+         << endl;
+
+    cout << "+10 Koin\n";
+    cout << "+10 Bahagia\n";
+    cout << "-10 Energi\n";
+
+        if(namalokasi[posisi] == "Klinik")
+    {
+        char pilih;
+
+        cout << "\nMasuk ke Klinik? (y/n): ";
+        cin >> pilih;
+
+        if(pilih == 'y' || pilih == 'Y')
+        {
+            Klinik(p, head);
+
+            cout << "\nLanjut ke Toko? (y/n): ";
+            cin >> pilih;
+
+            if(pilih == 'y' || pilih == 'Y')
+            {
+                posisi = 4;
+
+                cout << "\n📍 Sekarang berada di Toko\n";
+
+                cout << "Gunakan menu Beli Makanan untuk berbelanja.\n";
+            }
+        }
+    }
+}
+
+// Interaksi Taman
+void CariItem(pet &p, aktivitas* &head) {
+    int hadiah = rand() % 3;
+    cout << "\n=== EKSPLORASI TAMAN ===\n";
+
+    if(hadiah == 0) {
+        p.apel++;
+        cout << "Kamu menemukan sebuah apel!\n";
+        TambahAktivitas(head, "Menemukan apel di taman");  
+    }
+    else if(hadiah == 1) {
+        p.roti++;
+        cout << "Kamu menemukan sebuah roti!\n";
+        TambahAktivitas(head, "Menemukan roti di taman");
+    }
+    else {
+        p.koin += 10;
+        cout << "Menemukan 10 koin!!\n";
+        TambahAktivitas(head, "Menemukan koin di taman");
+    }
+}
+
+
 // fitur Main
 int main() {
     pet myPet;
@@ -788,6 +1002,7 @@ int main() {
     aktivitas* head = NULL;
     transaksi* top = NULL;
     Skill* skillRoot = BuatSkillTree();
+    int posisi = 0; // Lokasi awal: Rumah
 
     srand(time(0)); // Random poin awal pet
 
@@ -813,6 +1028,7 @@ int main() {
     myPet.lapar = rand() % 21 + 40;
     myPet.bahagia = rand() % 21 + 40;
     myPet.energi = rand() % 21 + 40;
+    myPet.kesehatan = 100;
 
     myPet.skillPoint = 0;
     myPet.koin = 50;
@@ -835,19 +1051,21 @@ int main() {
         cout << "         \U0001F3AE PawPal        \n";
         cout << "=================================\n";
         cout << "1. \U0001F4CA Lihat Status\n";
-        cout << "2. \U0001F37D  Makan\n";
-        cout << "3. \U0001F6D2 Beli Makanan\n";
-        cout << "4. \U0001F634 Tidur\n";
-        cout << "5. \U0001F3BE Main\n";
-        cout << "6. \U0001F4DC Lihat Aktivitas\n";
-        cout << "7. 🌟 Skill Tree\n";
+        cout << "2. 🗺 Lihat Peta Kota\n";
+        cout << "3. 🚶 Jalan-jalan\n";
+        cout << "4. \U0001F37D  Makan\n";
+        cout << "5. \U0001F6D2 Beli Makanan\n";
+        cout << "6. \U0001F634 Tidur\n";
+        cout << "7. \U0001F3BE Main\n";
+        cout << "8. \U0001F4DC Lihat Aktivitas\n";
+        cout << "9. 🌟 Skill Tree\n";
 
     if (CekStatusPenuh(myPet)) {
-        cout << "8. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
-        cout << "9. Keluar\n";
+        cout << "10. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
+        cout << "11. Keluar\n";
     }
     else {
-        cout << "9. Keluar\n";
+        cout << "10. Keluar\n";
     }
 
     cout << "Pilihan: ";
@@ -864,26 +1082,60 @@ int main() {
                 cout << "\U0001F60A Bahagia : " << myPet.bahagia << endl;
                 cout << "\U000026A1 Energi  : " << myPet.energi << endl;
                 cout << "\U0001F4B0 Koin    : " << myPet.koin << endl;
+                cout << "\U0001F489 Kesehatan : " << myPet.kesehatan << endl;
                 cout << "⭐ Skill Point : " << myPet.skillPoint << endl;
                 break;
 
             case 2:
+            TampilkanPetaLokasi();
+            break;
+
+            case 3:
+            jalanjalan(posisi, myPet, head);
+
+            if(posisi == 1)
+            {
+                CariItem(myPet, head);
+            }
+
+            UpdateStatus(myPet);
+            break;
+
+            case 4:
                 Makan(myPet, head);
                 UpdateStatus(myPet);
                 break;
 
-            case 3:
+
+            case 5:
+                if(posisi != 4)
+                {
+                    cout << "Kamu harus berada di Toko untuk membeli makanan!\n";                        break;
+                }
+
                 BeliMakanan(myPet, head, skillRoot, top);
                 UpdateStatus(myPet);
                 break;
 
-            case 4:
+            case 6:
+                if(posisi != 0)
+                {
+                    cout << "Kamu harus berada di Rumah untuk tidur!\n";
+                    break;
+                }
+
                 Tidur(myPet, head);
                 UpdateStatus(myPet);
                 break;
 
-            case 5:
+            case 7:
             {
+                if(posisi != 2)
+                {
+                    cout << "Kamu harus berada di Arena untuk bermain!\n";
+                    break;
+                }
+
                 Main(myPet, head, skillRoot);
 
                 Skill* kecerdasan = CariSkill(skillRoot, "Kecerdasan");
@@ -898,11 +1150,11 @@ int main() {
                 break;
             }
 
-            case 6:
+            case 8:
                 LihatAktivitas(head);
                 break;
 
-            case 7:
+            case 9:
                 cout << "\n=== SKILL TREE ===\n";
 
                 TampilkanSkill(skillRoot);
@@ -943,7 +1195,7 @@ int main() {
 
                 break;
 
-            case 8:
+            case 10:
                 if (CekStatusPenuh(myPet)){
                     char konfirmasi;
                     cout << "\nStatus pet sudah penuh, Apakah anda ingin melepas pet ke alam bebas? (y/n): ";
@@ -970,7 +1222,7 @@ int main() {
                 }
                 break;
 
-            case 9: 
+            case 11: 
             jalan = false;
             cout << "Anda telah keluar dari game. Terima kasih telah memainkan PawPal ^-^\n";
             break;
