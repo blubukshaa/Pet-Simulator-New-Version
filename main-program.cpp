@@ -221,58 +221,112 @@ bool CekStatusPenuh(pet &p){
 
 // update
 void Makan(pet &p, aktivitas* &head){
-    int pilih;
+    int pilih, jumlah;
+
     cout << "=== PILIH MAKANAN ===" << endl;
-    cout << "1. \U0001F34E Apel     (stok: " << p.apel << ")" << endl;
-    cout << "2. \U0001F356 Daging   (stok: " << p.daging << ")" << endl;
-    cout << "3. \U0001F35E Roti     (stok: " << p.roti<< ")" << endl;
+    cout << "1. 🍎 Apel     (stok: " << p.apel << ")" << endl;
+    cout << "2. 🍖 Daging   (stok: " << p.daging << ")" << endl;
+    cout << "3. 🍞 Roti     (stok: " << p.roti << ")" << endl;
     cout << "4. Kembali" << endl;
-    pilih = ValidasiInput(1, 4, "Pilih makanan: ");
 
+    pilih = ValidasiInput(
+        1,
+        4,
+        "Pilih makanan: "
+    );
 
-    if (pilih == 4) return;
+    if (pilih == 4)
+        return;
+
+    jumlah = ValidasiInput(
+        1,
+        100,
+        "Mau makan berapa banyak? "
+    );
 
     if (pilih == 1){
-        if (p.apel > 0){
-            p.apel--;
-            p.lapar -= 5;
-            TambahAktivitas(head, "Memberi apel");
-            cout << "Berhasil memberi apel!\n";
-            cout << "Lapar sekarang: " << p.lapar << endl;
+
+        if (p.apel >= jumlah){
+
+            p.apel -= jumlah;
+            p.lapar -= (5 * jumlah);
+
+            TambahAktivitas(
+                head,
+                "Memberi "
+                + to_string(jumlah)
+                + " apel"
+            );
+
+            cout << "Berhasil memberi "
+                 << jumlah
+                 << " apel!\n";
+
+            cout << "Lapar sekarang: "
+                 << p.lapar
+                 << endl;
         }
         else{
-            cout << "Apel habis!";
+            cout << "Stok apel tidak cukup!\n";
         }
-    }
-    else if (pilih == 2){
-        if (p.daging > 0){
-            p.daging--;
-            p.lapar -= 15;
-            TambahAktivitas(head, "Memberi daging");
-            cout << "Berhasil memberi daging!\n";
-            cout << "Lapar sekarang: " << p.lapar << endl;
-        }
-        else {
-            cout << "Daging habis!";
-        }
-    }
-    else if (pilih == 3){
-        if (p.roti > 0){
-            p.roti--;
-            p.lapar -= 7;
-            TambahAktivitas(head, "Memberi roti");
-            cout << "Berhasil memberi roti!\n";
-            cout << "Lapar sekarang: " << p.lapar << endl;
-        }
-        else {
-            cout << "Roti habis!";
-        }
-    }
-    else {
-        cout << "Pilihan tidak valid!";
     }
 
-    if (p.lapar < 0) p.lapar = 0;
+    else if (pilih == 2){
+
+        if (p.daging >= jumlah){
+
+            p.daging -= jumlah;
+            p.lapar -= (15 * jumlah);
+
+            TambahAktivitas(
+                head,
+                "Memberi "
+                + to_string(jumlah)
+                + " daging"
+            );
+
+            cout << "Berhasil memberi "
+                 << jumlah
+                 << " daging!\n";
+
+            cout << "Lapar sekarang: "
+                 << p.lapar
+                 << endl;
+        }
+        else{
+            cout << "Stok daging tidak cukup!\n";
+        }
+    }
+
+    else if (pilih == 3){
+
+        if (p.roti >= jumlah){
+
+            p.roti -= jumlah;
+            p.lapar -= (7 * jumlah);
+
+            TambahAktivitas(
+                head,
+                "Memberi "
+                + to_string(jumlah)
+                + " roti"
+            );
+
+            cout << "Berhasil memberi "
+                 << jumlah
+                 << " roti!\n";
+
+            cout << "Lapar sekarang: "
+                 << p.lapar
+                 << endl;
+        }
+        else{
+            cout << "Stok roti tidak cukup!\n";
+        }
+    }
+
+    if (p.lapar < 0)
+        p.lapar = 0;
 }
 
 // Fungsi Tidur
