@@ -1719,6 +1719,15 @@ int adj[jumlah_lokasi][jumlah_lokasi] =
     {0, 0, 0, 1, 0}  // Toko
 }; 
 
+int cost[jumlah_lokasi][jumlah_lokasi] = 
+{
+    {0, 5, 0, 0, 0}, // Rumah
+    {5, 0, 8, 0, 0}, // Taman
+    {0, 8, 0, 10, 0}, // Arena
+    {0, 0, 10, 0, 6}, // klinik
+    {0, 0, 0, 6, 0}  // Toko
+}; 
+
 void TampilkanPetaLokasi()
 {
     cout << "\n========== PETA KOTA ==========\n";
@@ -1773,12 +1782,6 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
     int tujuan[10];
     int jumlah = 0;
 
-    if(p.energi < 10)
-    {
-        cout << "Energi tidak cukup untuk jalan-jalan!\n";
-        return;
-    }
-
         cout << "\n========== PETA KOTA ==========\n";
     cout << "\U0001F3E0 Rumah <-> \U0001F333 Taman <-> \U0001F3DF Arena <-> \U0001F3E5 Klinik <-> \U0001F3EA Toko\n";
     cout << "================================\n";
@@ -1797,28 +1800,69 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
 
     cout << "\nTujuan tersedia:\n";
 
+    // menampilkan tujuan yang bisa dijangkau dari lokasi saat ini
     for(int i = 0; i < jumlah_lokasi; i++)
     {
         if(adj[posisi][i] == 1)
         {
             jumlah++;
 
-            cout << jumlah
-                 << ". "
+            cout << jumlah << ". "
                  << namalokasi[i]
+                 << " (Biaya: " << cost[posisi][i] << " energi)"
                  << endl;
 
             tujuan[jumlah] = i;
         }
     }
 
-    int pilih =
-        ValidasiInput(1, jumlah,
-                      "Pilih tujuan: ");
+    // kalau tidak ada jalan sama sekali
+    if(jumlah == 0)
+    {
+        cout << "Tidak ada jalan dari lokasi ini!\n";
+        return;
+    }
 
-    posisi = tujuan[pilih];
+    int pilih = ValidasiInput(1, jumlah, "Pilih tujuan: ");
 
-    p.energi -= 10;
+    int tujuanDipilih = tujuan[pilih];
+    int biaya = cost[posisi][tujuanDipilih];
+
+    // energi di cek dulu dan menghindari soft lock
+    if(p.energi < biaya)
+    {
+        cout << "Energi tidak cukup untuk ke lokasi tersebut!\n";
+
+        bool bisaJalan = false;
+
+        for(int i = 0; i < jumlah_lokasi; i++)
+        {
+            if(adj[posisi][i] == 1 && p.energi >= cost[posisi][i])
+            {
+                bisaJalan = true;
+                break;
+            }
+        }
+
+        if(!bisaJalan)
+        {
+            cout << "Pet kelelahan dan tidak bisa bergerak...\n";
+            cout << "Pet pingsan dan dibawa kembali ke rumah.\n";
+
+            posisi = 0;
+            p.energi = 5;
+        }
+
+        return;
+    }
+
+    // pindah lokasi
+    posisi = tujuanDipilih;
+
+    // kurangi energi sesuai cost
+    p.energi -= biaya;
+
+    // reward
     p.bahagia += 10;
     p.koin += 10;
 
@@ -1836,9 +1880,10 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
 
     cout << "+10 Koin\n";
     cout << "+10 Bahagia\n";
-    cout << "-10 Energi\n";
+    cout << "-" << biaya << " Energi\n";
 
-        if(namalokasi[posisi] == "Klinik")
+    // kegiatan di klinik
+    if(namalokasi[posisi] == "Klinik")
     {
         char pilih;
 
@@ -1862,9 +1907,19 @@ void jalanjalan(int &posisi, pet &p, aktivitas* &head)
             }
         }
     }
+
+    // ini loop back jika energi habis stelah jalan-jalan (menghindari soft lock)
+    if(p.energi <= 0)
+    {
+        cout << "Pet kelelahan dan pingsan...\n";
+        cout << "Pet dibawa kembali ke rumah.\n";
+
+        posisi = 0;
+        p.energi = 5;
+    }
 }
 
-// Interaksi Taman
+// kegiatan di Taman
 void CariItem(pet &p, aktivitas* &head) {
     int hadiah = rand() % 3;
     cout << "\n=== EKSPLORASI TAMAN ===\n";
