@@ -1533,6 +1533,8 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
         }
         
         gamePenaltyShoot(p, head);
+        p.skillPoint++;
+        cout << "+1 Skill Poin!\n";
     }
     else if (pilih == 3) {
         if (p.energi < 5) {
@@ -1542,6 +1544,8 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
         p.koin += 10;
         p.energi -= 5;
         p.bahagia +=10;
+        p.skillPoint++;
+        cout << "+1 Skill Poin!\n";
         TambahAktivitas(head, "Main lompat tinggi");
         cout << "Selesai bermain!\n";
         cout << "\U0001F600 Bahagia sekarang   : " << p.bahagia << endl;
