@@ -2020,13 +2020,15 @@ int main() {
     if (CekStatusPenuh(myPet)) {
         cout << "11. \U0001F304 Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
         cout << "12. \U0001F6AA Keluar\n";
+
+        pilihan = ValidasiInput(1, 12, "Pilihan: ");
     }
     else {
         cout << "11. \U0001F6AA Keluar\n";
+
+        pilihan = ValidasiInput(1, 12, "Pilihan: ");
     }
 
-    cout << "Pilihan: ";
-    cin >> pilihan;
 
         switch (pilihan) {
             case 1:
