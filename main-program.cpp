@@ -24,6 +24,7 @@ struct pet{
     int apel;
     int daging;
     int roti;
+    int energyDrink;
     int kesehatan;
     int cooldownEvent;
 };
@@ -128,6 +129,7 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
     int hargaApel = 5;
     int hargaDaging = 15;
     int hargaRoti = 7;
+    int hargaEnergyDrink = 20;
 
     if(berhitung != NULL &&
     berhitung->terbuka)
@@ -135,6 +137,7 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
         hargaApel = 4;
         hargaDaging = 12;
         hargaRoti = 5;
+        hargaEnergyDrink = 15;
     }
 
     cout << "=== \U0001F3EA TOKO MAKANAN ===" << endl;
@@ -149,10 +152,15 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
     cout << "3. \U0001F35E Roti (Harga: "
         << hargaRoti
         << ", Lapar -10)" << endl;
-    cout << "4. \U0001F519 Kembali" << endl;
-    pilih = ValidasiInput(1,4, "Pilih makanan yang ingin dibeli(masukkan angka): ");
+        
+    cout << "4. \U0001F37E Energy Drink (Harga: "
+        << hargaEnergyDrink
+        << ", Energi +20)" << endl;
 
-    if (pilih == 4) return;
+    cout << "5. \U0001F519 Kembali" << endl;
+    pilih = ValidasiInput(1,5, "Pilih makanan yang ingin dibeli(masukkan angka): ");
+
+    if (pilih == 5) return;
 
     jumlah = ValidasiInput(1, 100, "Masukkan jumlah pembelian: ");    
 
@@ -171,6 +179,11 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
             namaMakanan = "Roti";
             harga = hargaRoti;
             break;
+
+        case 4:
+            namaMakanan = "Energy Drink";
+            harga = hargaEnergyDrink;
+            break;
 }
 
     int totalHarga = harga * jumlah;
@@ -182,9 +195,11 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
             p.apel += jumlah;
         else if (pilih == 2)
             p.daging += jumlah;
-        else 
+        else if (pilih == 3) 
             p.roti += jumlah;
-
+        else if (pilih == 4)
+            {p.energyDrink += jumlah;}
+           
         PushTransaksi(
             top,
             namaMakanan,
@@ -201,10 +216,16 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
         cout << "\U0001F4B0 Total harga : " << totalHarga << endl;
         cout << "\U0001FA99 Sisa koin : " << p.koin << endl;
 
+        if(pilih == 4)
+        {
+            cout << "\U000026A1 Energi sekarang : " << p.energi << endl;
+        }
+
         cout << "\n=== \U0001F4E6 STOK MAKANAN ===" << endl;
-        cout << "\U0001F34E Apel   : " << p.apel << endl;
-        cout << "\U0001F356 Daging : " << p.daging << endl;
-        cout << "\U0001F35E Roti   : " << p.roti << endl;
+        cout << "\U0001F34E Apel        : " << p.apel << endl;
+        cout << "\U0001F356 Daging      : " << p.daging << endl;
+        cout << "\U0001F35E Roti        : " << p.roti << endl;
+        cout << "\U0001F37E Energy Drink: " << p.energyDrink << endl;
     }
     else{
         cout << "Koin tidak cukup!\n";
@@ -246,22 +267,32 @@ void Makan(pet &p, aktivitas* &head){
     cout << "1. \U0001F34E Apel     (stok: " << p.apel << ")" << endl;
     cout << "2. \U0001F356 Daging   (stok: " << p.daging << ")" << endl;
     cout << "3. \U0001F35E Roti     (stok: " << p.roti << ")" << endl;
-    cout << "4. \U0001F519 Kembali" << endl;
+    cout << "4. \U0001F37E Energy Drink (stok: " << p.energyDrink << ")" << endl;
+    cout << "5. \U0001F519 Kembali" << endl;
 
     pilih = ValidasiInput(
         1,
-        4,
+        5,
         "Pilih makanan: "
     );
 
-    if (pilih == 4)
-        return;
+    if (pilih == 5)
+        {
+            return;
+        }
 
-    jumlah = ValidasiInput(
-        1,
-        100,
-        "Mau makan berapa banyak? "
-    );
+    if (pilih != 4)
+    {
+        jumlah = ValidasiInput(
+            1,
+            100,
+            "Mau makan berapa banyak? "
+        );
+    }
+    else
+    {
+        jumlah = 1;
+    }
 
     if (pilih == 1){
 
@@ -322,7 +353,7 @@ void Makan(pet &p, aktivitas* &head){
         if (p.roti >= jumlah){
 
             p.roti -= jumlah;
-            p.lapar -= (7 * jumlah);
+            p.lapar -= (10 * jumlah);
 
             TambahAktivitas(
                 head,
@@ -341,6 +372,28 @@ void Makan(pet &p, aktivitas* &head){
         }
         else{
             cout << "Stok roti tidak cukup!\n";
+        }
+    }
+
+    else if (pilih == 4){
+        if  (p.energyDrink >= jumlah){
+            p.energyDrink -= jumlah;
+            p.energi += (20 * jumlah);
+
+            if (p.energi > 100)
+                p.energi = 100;
+
+            TambahAktivitas(
+                head, "meminum 1 Energy drink!\n" 
+            );
+
+            cout << "\U000026A1 Berhasil meminum 1 energy drink!\n";
+            cout << "\U000026A1 Energi sekarang: " << p.energi << endl;
+
+        }
+        else
+        {
+            cout << "Stok Energy Drink tidak cukup!\n";
         }
     }
 
@@ -1754,6 +1807,7 @@ void InisialisasiPetBaru(pet &p) {
     p.apel = 0;
     p.daging = 0;
     p.roti = 0;
+    p.energyDrink = 0;
     p.cooldownEvent = 0;
 
     cout << "Pet baru berhasil dibuat!\n";
