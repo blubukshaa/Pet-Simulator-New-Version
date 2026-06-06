@@ -124,19 +124,19 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
         hargaRoti = 5;
     }
 
-    cout << "=== TOKO MAKANAN ===" << endl;
-    cout << "1. Apel (Harga: "
+    cout << "=== \U0001F3EA TOKO MAKANAN ===" << endl;
+    cout << "1. \U0001F34E Apel (Harga: "
         << hargaApel
         << ", Lapar -5)" << endl;
 
-    cout << "2. Daging (Harga: "
+    cout << "2. \U0001F356 Daging (Harga: "
         << hargaDaging
         << ", Lapar -15)" << endl;
 
-    cout << "3. Roti (Harga: "
+    cout << "3. \U0001F35E Roti (Harga: "
         << hargaRoti
         << ", Lapar -10)" << endl;
-    cout << "4. Kembali" << endl;
+    cout << "4. \U0001F519 Kembali" << endl;
     pilih = ValidasiInput(1,4, "Pilih makanan yang ingin dibeli(masukkan angka): ");
 
     if (pilih == 4) return;
@@ -185,12 +185,12 @@ void BeliMakanan(pet &p, aktivitas* &head, Skill* skillRoot, transaksi* &top){
         );
 
         cout << "\nBerhasil membeli " << jumlah << " " << namaMakanan << "!\n";
-        cout << "Total harga : " << totalHarga << endl;
-        cout << "Sisa koin : " << p.koin << endl;
+        cout << "\U0001F4B0 Total harga : " << totalHarga << endl;
+        cout << "\U0001FA99 Sisa koin : " << p.koin << endl;
 
-        cout << "\n=== STOK MAKANAN ===" << endl;
-        cout << "\U0001F356 Apel   : " << p.apel << endl;
-        cout << "\U0001F35E Daging : " << p.daging << endl;
+        cout << "\n=== \U0001F4E6 STOK MAKANAN ===" << endl;
+        cout << "\U0001F34E Apel   : " << p.apel << endl;
+        cout << "\U0001F356 Daging : " << p.daging << endl;
         cout << "\U0001F35E Roti   : " << p.roti << endl;
     }
     else{
@@ -229,11 +229,11 @@ bool CekStatusPenuh(pet &p){
 void Makan(pet &p, aktivitas* &head){
     int pilih, jumlah;
 
-    cout << "=== PILIH MAKANAN ===" << endl;
-    cout << "1. 🍎 Apel     (stok: " << p.apel << ")" << endl;
-    cout << "2. 🍖 Daging   (stok: " << p.daging << ")" << endl;
-    cout << "3. 🍞 Roti     (stok: " << p.roti << ")" << endl;
-    cout << "4. Kembali" << endl;
+    cout << "=== \U0001F37D PILIH MAKANAN ===" << endl;
+    cout << "1. \U0001F34E Apel     (stok: " << p.apel << ")" << endl;
+    cout << "2. \U0001F356 Daging   (stok: " << p.daging << ")" << endl;
+    cout << "3. \U0001F35E Roti     (stok: " << p.roti << ")" << endl;
+    cout << "4. \U0001F519 Kembali" << endl;
 
     pilih = ValidasiInput(
         1,
@@ -268,7 +268,7 @@ void Makan(pet &p, aktivitas* &head){
                  << jumlah
                  << " apel!\n";
 
-            cout << "Lapar sekarang: "
+            cout << "\U0001F37D Lapar sekarang: "
                  << p.lapar
                  << endl;
         }
@@ -295,7 +295,7 @@ void Makan(pet &p, aktivitas* &head){
                  << jumlah
                  << " daging!\n";
 
-            cout << "Lapar sekarang: "
+            cout << "\U0001F37D Lapar sekarang: "
                  << p.lapar
                  << endl;
         }
@@ -322,7 +322,7 @@ void Makan(pet &p, aktivitas* &head){
                  << jumlah
                  << " roti!\n";
 
-            cout << "Lapar sekarang: "
+            cout << "\U0001F37D Lapar sekarang: "
                  << p.lapar
                  << endl;
         }
@@ -340,11 +340,11 @@ void Tidur(pet &p, aktivitas* &head) {
     int pilih;
 
     while (true) {
-        cout << "\n=== PILIH WAKTU TIDUR ===\n";
-        cout << "1. 5 detik (15 energi)\n";
-        cout << "2. 10 detik (35 energi)\n";
-        cout << "3. 15 detik (50 energi)\n";
-        cout << "4. Kembali\n";
+        cout << "\n=== \U0001F4A4 PILIH WAKTU TIDUR ===\n";
+        cout << "1. \U0001F554 5 detik (15 energi)\n";
+        cout << "2. \U0001F559 10 detik (35 energi)\n";
+        cout << "3. \U0001F552 15 detik (50 energi)\n";
+        cout << "4. \U0001F519 Kembali\n";
         pilih = ValidasiInput(1, 4, "Pilihan: ");
 
         int durasi = 0, energi_dapat = 0;
@@ -373,7 +373,7 @@ void Tidur(pet &p, aktivitas* &head) {
         TambahAktivitas(head, "Tidur " + to_string(durasi) + " detik");
 
         cout << "\nSelesai tidur!\n";
-        cout << "Energi sekarang: " << p.energi << endl;
+        cout << "\U000026A1 Energi sekarang: " << p.energi << endl;
         return; // Balik ke menu utama juga
     }
 }
@@ -673,9 +673,9 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
         cout << "+1 Skill Poin\n";
 
         cout << "\nStatus Setelah Bermain:\n";
-        cout << "Energi sekarang    : " << p.energi << endl;
-        cout << "Bahagia sekarang   : " << p.bahagia << endl;
-        cout << "Koin sekarang      : " << p.koin << endl;
+        cout << "\U000026A1 Energi sekarang    : " << p.energi << endl;
+        cout << "\U0001F600 Bahagia sekarang   : " << p.bahagia << endl;
+        cout << "\U0001FA99 Koin sekarang      : " << p.koin << endl;
 
         TambahAktivitas(head, "Menang game susun bola");
 
@@ -742,9 +742,9 @@ void gamePenaltyShoot(pet &p, aktivitas* &head)
         int tendangan;
 
         cout << "\n=== Tendangan ke-" << ronde << " ===\n";
-        cout << "1. Kiri\n";
-        cout << "2. Tengah\n";
-        cout << "3. Kanan\n";
+        cout << "1. \U00002B05 Kiri\n";
+        cout << "2. \U000023FA Tengah\n";
+        cout << "3. \U000027A1 Kanan\n";
 
         while(true)
         {
@@ -894,8 +894,8 @@ void CariTeman(teman* &head){
         int index = rand() % 3;
 
         cout << "\nKamu bertemu " << starter[index] << "!\n";
-        cout << "1. Ajak Berteman\n";
-        cout << "2. Kembali\n";
+        cout << "1. \U0001F91D Ajak Berteman\n";
+        cout << "2. \U0001F519 Kembali\n";
 
         int pilih = ValidasiInput(1,2,"Pilihan: ");
 
@@ -908,6 +908,19 @@ void CariTeman(teman* &head){
 
     string kandidat[JUMLAH_TEMAN];
     int jumlah = 0;
+
+    string starter[3] = {
+    "Snow",
+    "Luka",
+    "Choco"
+};
+
+for(int i = 0; i < 3; i++){
+    if(!SudahBerteman(head, starter[i])){
+        kandidat[jumlah] = starter[i];
+        jumlah++;
+    }
+}
 
     teman* temp = head;
 
@@ -928,18 +941,16 @@ void CariTeman(teman* &head){
                 if(relasi[idxTeman][i]){
                     if(!SudahBerteman(head, semuaTeman[i])){
                         bool sudahMasuk = false;
-
-                        for (int j = 0; j < jumlah; j++){
-                            if (kandidat[j] == semuaTeman[i]){
+                        
+                        for(int j = 0; j < jumlah; j++){
+                            if(kandidat[j] == semuaTeman[i]){
                                 sudahMasuk = true;
                                 break;
                             }
                         }
 
                         if (!sudahMasuk){
-                            kandidat[jumlah] =
-                                semuaTeman[i];
-
+                            kandidat[jumlah] = semuaTeman[i];
                             jumlah++;
                         }
                     }
@@ -949,8 +960,7 @@ void CariTeman(teman* &head){
         temp = temp->next;
     }
 
-    if(jumlah == 0){
-
+    if (jumlah == 0){
         cout << "\nTidak ada teman baru yang bisa ditemukan.\n";
         return;
     }
@@ -958,12 +968,12 @@ void CariTeman(teman* &head){
     int index = rand() % jumlah;
 
     cout << "\nKamu bertemu " << kandidat[index] << "!\n";
-    cout << "1. Ajak Berteman\n";
-    cout << "2. Kembali\n";
+    cout << "1. \U0001F91D Ajak Berteman\n";
+    cout << "2. \U0001F519 Kembali\n";
 
     int pilih = ValidasiInput(1,2,"Pilihan: ");
 
-    if( pilih == 1){
+    if ( pilih == 1){
         TambahTeman(head, kandidat[index]);
         cout << kandidat[index] << " sekarang menjadi temanmu!\n";
     }
@@ -1025,7 +1035,7 @@ void ResetMainHariIni(teman* head){
 // Lihat teman
 void LihatTeman(teman* head){
 
-    cout << "\n=== DAFTAR TEMAN ===\n";
+    cout << "\n=== \U0001F465 DAFTAR TEMAN ===\n";
 
     if (head == NULL){
 
@@ -1037,9 +1047,9 @@ void LihatTeman(teman* head){
 
     while (head){
         cout << nomor << ". " << head->nama << endl;
-        cout << "   Friendship : " << head->friendship << endl;
-        cout << "   Status     : " << StatusFriendship(head->friendship) << endl;
-        cout << "   Energi     : " << head->energi << endl;
+        cout << "\U0001F49D Friendship : " << head->friendship << endl;
+        cout << "\U0001F91D Status     : " << StatusFriendship(head->friendship) << endl;
+        cout << "\U000026A1 Energi     : " << head->energi << endl;
         cout << "---------------------\n";
 
         nomor++;
@@ -1098,11 +1108,11 @@ void MenuTeman(teman* &daftarTeman){
 
     do{
 
-        cout << "\n=== MENU TEMAN ===\n";
+        cout << "\n=== \U0001F465 MENU TEMAN ===\n";
 
-        cout << "1. Lihat Teman\n";
-        cout << "2. Cari Teman Baru\n";
-        cout << "3. Kembali\n";
+        cout << "1. \U0001F4CB Lihat Teman\n";
+        cout << "2. \U0001F50D Cari Teman Baru\n";
+        cout << "3. \U0001F519 Kembali\n";
 
         pilih = ValidasiInput(1, 3, "Pilihan: ");
 
@@ -1146,8 +1156,8 @@ void EventTemanTerjatuh(teman* head){
     cout << "\n\U000026A0 EVENT PERTEMANAN \U000026A0\n";
     cout << temp->nama << " terjatuh saat bermain!\n";
 
-    cout << "1. Bantu dia\n";
-    cout << "2. Abaikan\n";
+    cout << "1. \U0001F91D Bantu dia\n";
+    cout << "2. \U0001F636 Abaikan\n";
 
     int pilih = ValidasiInput(1, 2, "Pilihan: ");
 
@@ -1230,8 +1240,8 @@ void EventMintaMakanan(pet &p, teman* head){
     cout << "\U0001F34E Apel   : " << p.apel << endl;
     cout << "\U0001F356 Daging : " << p.daging << endl;
     cout << "\U0001F35E Roti   : " << p.roti << endl;
-    cout << "\n1. Beri makanan\n";
-    cout << "2. Tolak\n";
+    cout << "\n1. \U0001F381 Beri makanan\n";
+    cout << "2. \U0001F645 Tolak\n";
 
     int pilih = ValidasiInput(1, 2, "Pilihan: ");
 
@@ -1318,10 +1328,10 @@ void EventAjakBermain(pet &p, teman* head){
     cout << temp->nama << " mengajakmu bermain.\n";
 
     cout << "\n=== STATUS ENERGI ===\n";
-    cout << "Energi Pet : " << p.energi << endl;
-    cout << "Biaya Bermain : 10 Energi\n\n";
-    cout << "1. Terima ajakan\n";
-    cout << "2. Tolak\n";
+    cout << "\U000026A1 Energi Pet : " << p.energi << endl;
+    cout << "\U0001F50B Biaya Bermain : 10 Energi\n\n";
+    cout << "1. \U0001F3B2 Terima ajakan\n";
+    cout << "2. \U0001F645 Tolak\n";
 
     int pilih = ValidasiInput(1, 2, "Pilihan: ");
 
@@ -1403,11 +1413,11 @@ void EventKenalanTeman(teman* &head){
 
     int pilihTeman = rand() % jumlah;
 
-    cout << "\n=== EVENT PERTEMANAN ===\n";
+    cout << "\n\U0001F465 EVENT PERTEMANAN \U0001F465\n";
     cout << temp->nama << " mengenalkanmu kepada " << kandidat[pilihTeman] << "!\n";
 
-    cout << "1. Berkenalan\n";
-    cout << "2. Tolak\n";
+    cout << "1. \U0001F91D Berkenalan\n";
+    cout << "2. \U0001F645 Tolak\n";
 
     int pilih = ValidasiInput(1,2,"Pilihan: ");
 
@@ -1478,10 +1488,10 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
 
     cout << "\n=== PILIH AKTIVITAS MAIN ===\n";
     cout << "Energi saat ini: " << p.energi << endl;
-    cout << "1. Main susun bola (+50 koin, +35 bahagia, -10 energi)\n";
-    cout << "2. Main bola (+20 koin, +20 bahagia, -7 energi)\n";
-    cout << "3. Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
-    cout << "4. Kembali\n";
+    cout << "1. \U0001F9EA Main susun bola (+50 koin, +35 bahagia, -10 energi)\n";
+    cout << "2. \U000026BD Main bola (+20 koin, +20 bahagia, -7 energi)\n";
+    cout << "3. \U0001F938 Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
+    cout << "4. \U0001F519 Kembali\n";
     pilih = ValidasiInput(1, 4, "Pilihan: ");
 
     if (pilih == 4) return;
@@ -1534,8 +1544,8 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
         p.bahagia +=10;
         TambahAktivitas(head, "Main lompat tinggi");
         cout << "Selesai bermain!\n";
-        cout << "Bahagia sekarang   : " << p.bahagia << endl;
-        cout << "Koin sekarang      : " << p.koin << endl;
+        cout << "\U0001F600 Bahagia sekarang   : " << p.bahagia << endl;
+        cout << "\U0001FA99 Koin sekarang      : " << p.koin << endl;
     }
     else {
         cout << "Pilihan tidak valid!\n";
@@ -1613,7 +1623,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
 
     cout << "Bonus Bahagia +" << bonusBahagia << endl;
 
-    cout << "Energi " << temanDipilih->nama << " sekarang: " << temanDipilih->energi << "/100\n";
+    cout << "\U000026A1 Energi " << temanDipilih->nama << " sekarang: " << temanDipilih->energi << "/100\n";
 
     if (temanDipilih->energi <= 30){
         cout << "\U000026A0 " << temanDipilih->nama << " mulai kelelahan.\n";
@@ -1648,24 +1658,24 @@ void UpdateStatus(pet &p){
 }
 
 string CekMood(pet &p){
-    if (p.kesehatan < 40)   return "Sakit";
-    if (p.lapar >= 80)      return "Sangat Lapar";
-    if (p.energi < 20)      return "Mengantuk";
-    if (p.lapar > 70)       return "Lapar";
-    if (p.bahagia < 30)     return "Sedih";
-    if (p.bahagia >= 80)    return "Sangat Bahagia";
-    return "Senang";
+    if (p.kesehatan < 40)   return "Sakit \U0001F912";
+    if (p.lapar >= 80)      return "Sangat Lapar \U0001F62B";
+    if (p.energi < 20)      return "Mengantuk \U0001F634";
+    if (p.lapar > 70)       return "Lapar \U0001F37D";
+    if (p.bahagia < 30)     return "Sedih \U0001F622";
+    if (p.bahagia >= 80)    return "Sangat Bahagia \U0001F604";
+    return "Senang \U0001F600";
 }
 
 void InisialisasiPetBaru(pet &p) {
     int pilih_jenis_pet;
 
     cout << "\n=== PILIH PET BARU ===\n";
-    cout << "1. Kucing\n";
-    cout << "2. Hamster\n";
-    cout << "3. Kura-kura\n";
-    cout << "4. Kelinci\n";
-    cout << "5. Bunglon\n";
+    cout << "1. \U0001F431 Kucing\n";
+    cout << "2. \U0001F439 Hamster\n";
+    cout << "3. \U0001F422 Kura-kura\n";
+    cout << "4. \U0001F430 Kelinci\n";
+    cout << "5. \U0001F432 Bunglon\n";
     cout << "Pilihanmu: ";
     cin >> pilih_jenis_pet;
 
@@ -1698,7 +1708,7 @@ void InisialisasiPetBaru(pet &p) {
     p.cooldownEvent = 0;
 
     cout << "Pet baru berhasil dibuat!\n";
-    cout << "Koin kamu tetap: " << p.koin << endl;
+    cout << "\U0001FA99 Koin kamu tetap: " << p.koin << endl;
 }
 
 const int jumlah_lokasi = 5;
@@ -1932,7 +1942,7 @@ void CariItem(pet &p, aktivitas* &head) {
     }
     else {
         p.koin += 10;
-        cout << "Menemukan 10 koin!!\n";
+        cout << "\U0001FA99 Menemukan 10 koin!\n";
         TambahAktivitas(head, "Menemukan koin di taman");
     }
 }
@@ -1953,11 +1963,11 @@ int main() {
     cout << "====== \U0001F3AE PawPal ======\n";
 
     cout << "Masukan jenis pet: " << endl;
-    cout << "1. Kucing" << endl;
-    cout << "2. Hamster" << endl;
-    cout << "3. Kura-kura" << endl;
-    cout << "4. Kelinci" << endl;
-    cout << "5. Bunglon" << endl;
+    cout << "1. \U0001F431 Kucing" << endl;
+    cout << "2. \U0001F439 Hamster" << endl;
+    cout << "3. \U0001F422 Kura-kura" << endl;
+    cout << "4. \U0001F430 Kelinci" << endl;
+    cout << "5. \U0001F432 Bunglon" << endl;
     pilih_jenis_pet = ValidasiInput(1,5, "Pilihanmu: ");
     
     string jenisPet[5] = {
@@ -1997,7 +2007,7 @@ int main() {
         cout << "         \U0001F3AE PawPal        \n";
         cout << "=================================\n";
         cout << "1. \U0001F4CA Lihat Status\n";
-        cout << "2. \U0001F5FA Lihat Peta Kota\n";
+        cout << "2. \U0001F5FA  Lihat Peta Kota\n";
         cout << "3. \U0001F6B6 Jalan-jalan\n";
         cout << "4. \U0001F37D  Makan\n";
         cout << "5. \U0001F6D2 Beli Makanan\n";
@@ -2008,11 +2018,11 @@ int main() {
         cout << "10. \U0001F31F Skill\n";
 
     if (CekStatusPenuh(myPet)) {
-        cout << "11. Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
-        cout << "12. Keluar\n";
+        cout << "11. \U0001F304 Lepas ke alam bebas (Pet dalam keadaan terbaik!)\n";
+        cout << "12. \U0001F6AA Keluar\n";
     }
     else {
-        cout << "11. Keluar\n";
+        cout << "11. \U0001F6AA Keluar\n";
     }
 
     cout << "Pilihan: ";
@@ -2031,7 +2041,7 @@ int main() {
                 cout << "\U0001F4B0 Koin    : " << myPet.koin << endl;
                 cout << "\U0001F489 Kesehatan : " << myPet.kesehatan << endl;
                 cout << "\U0001F31F Skill Poin : " << myPet.skillPoint << endl;
-                cout << "Mood : " << CekMood(myPet) << endl;
+                cout << "\U0001F3AD Mood : " << CekMood(myPet) << endl;
                 break;
 
             case 2:
