@@ -63,6 +63,19 @@ struct RelasiTeman{
     int jumlahKoneksi;
 };
 
+struct NodePenalty
+{
+    string hasil;
+    NodePenalty* kiri;
+    NodePenalty* tengah;
+    NodePenalty* kanan;
+};
+
+NodePenalty* BuatNodePenalty(string h);
+NodePenalty* BuatTreePenalty();
+void gamePenaltyShoot(pet &p, aktivitas* &head);
+
+
 int ValidasiInput(int min, int max, string pesan) {
     int input;
     while (true) {
@@ -730,96 +743,128 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
     } while (true);
 }
 
+NodePenalty* BuatNodePenalty(string h)
+{
+    NodePenalty* baru = new NodePenalty;
+
+    baru->hasil = h;
+    baru->kiri = NULL;
+    baru->tengah = NULL;
+    baru->kanan = NULL;
+
+    return baru;
+}
+
+NodePenalty* BuatTreePenalty()
+{
+    NodePenalty* root = BuatNodePenalty("Mulai");
+
+    root->kiri = BuatNodePenalty("Kiri");
+    root->tengah = BuatNodePenalty("Tengah");
+    root->kanan = BuatNodePenalty("Kanan");
+
+    // hasil untuk arah kiri
+    root->kiri->kiri = BuatNodePenalty("Gol");
+    root->kiri->kanan = BuatNodePenalty("Gagal");
+
+    // hasil untuk arah tengah
+    root->tengah->kiri = BuatNodePenalty("Gol");
+    root->tengah->kanan = BuatNodePenalty("Gagal");
+
+    // hasil untuk arah kanan
+    root->kanan->kiri = BuatNodePenalty("Gol");
+    root->kanan->kanan = BuatNodePenalty("Gagal");
+
+    return root;
+}
+
 //game main bola
 void gamePenaltyShoot(pet &p, aktivitas* &head)
 {
+    NodePenalty* tree = BuatTreePenalty();
+
     int gol = 0;
 
-    cout << "\n=== PENALTY SHOOT ===\n";
+    cout << "\n=== GAME MAIN BOLA===\n";
 
-    for(int ronde = 1; ronde <= 5; ronde++)
+    for (int ronde = 1; ronde <= 5; ronde++)
     {
         int tendangan;
 
         cout << "\n=== Tendangan ke-" << ronde << " ===\n";
-        cout << "1. \U00002B05 Kiri\n";
-        cout << "2. \U000023FA Tengah\n";
-        cout << "3. \U000027A1 Kanan\n";
+        cout << "1. Kiri\n";
+        cout << "2. Tengah\n";
+        cout << "3. Kanan\n";
 
-        while(true)
-        {
-            cout << "Pilih arah tendangan: ";
-            cin >> tendangan;
+        tendangan = ValidasiInput(1, 3, "Pilih arah tendangan: ");
 
-            if(cin.fail())
-            {
-                cin.clear();
-                cin.ignore(1000, '\n');
-                cout << "Input harus berupa angka!\n";
-            }
-            else if(tendangan < 1 || tendangan > 3)
-            {
-                cout << "Pilihan harus 1, 2, atau 3!\n";
-            }
-            else
-            {
-                break;
-            }
-        }
+        NodePenalty* arah = NULL;
+        if (tendangan == 1)
+            arah = tree->kiri;
+
+        else if (tendangan == 2)
+            arah = tree->tengah;
+
+        else
+            arah = tree->kanan;
 
         int kiper = rand() % 3 + 1;
 
         cout << "\nKiper melompat ke ";
 
-        if(kiper == 1)
+        if (kiper == 1)
             cout << "Kiri";
-        else if(kiper == 2)
+        else if (kiper == 2)
             cout << "Tengah";
         else
             cout << "Kanan";
 
         cout << "!\n";
 
-        if(tendangan == kiper)
+        NodePenalty* hasil;
+
+        if (tendangan == kiper)
         {
-            cout << "Bola ditangkap kiper!\n";
+            hasil = arah->kanan; //gagal
+        } else {
+            hasil = arah->kiri; //gol
         }
-        else
+
+        if (hasil->hasil == "Gol")
         {
-            cout << "GOOOOL!\n";
+            cout << "GOOOLLL!\n";
             gol++;
+        } else{
+            cout << "Bola ditangkap kiper\n";
         }
+
     }
 
     int bonusKoin = gol * 10;
-    int bonusBahagia = gol * 5;
+        int bonusBahagia = gol * 5;
 
-    p.koin += bonusKoin;
-    p.bahagia += bonusBahagia;
-    p.energi -= 10;
+        p.koin += bonusKoin;
+        p.bahagia += bonusBahagia;
+        p.energi -= 10;
 
-    if(p.bahagia > 100)
-        p.bahagia = 100;
+        if(p.bahagia > 100)
+            p.bahagia = 100;
 
-    if(p.energi < 0)
-        p.energi = 0;
+        if (p.energi < 0)
+            p.energi = 0;
 
-    cout << "\n=====================\n";
-    cout << "Total Gol : " << gol << "/5\n";
+        cout << "\n=========================\n";
+        cout << "Total Gol: " << gol << "/5\n";
 
-    cout << "\nReward:\n";
-    cout << "+" << bonusKoin << " Koin\n";
-    cout << "+" << bonusBahagia << " Bahagia\n";
-    cout << "-10 Energi\n";
+        cout << "+" << bonusKoin << " Koin\n";
+        cout << "+" << bonusBahagia << " Bahagia\n";
+        cout << "-10 Energi\n";
 
-    TambahAktivitas(
-        head,
-        "Bermain Penalty Shoot (" +
-        to_string(gol) +
-        " gol)"
-    );
+        TambahAktivitas(
+            head,
+            "Bermain Bola (" + to_string(gol) + " gol)"
+        );
 }
-
 
 //Fitur teman main
 // Daftar teman (graph)
