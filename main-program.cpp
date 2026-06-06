@@ -1587,7 +1587,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
     cout << "\n=== PILIH AKTIVITAS MAIN ===\n";
     cout << "Energi saat ini: " << p.energi << endl;
     cout << "1. \U0001F9EA Main susun bola (+50 koin, +35 bahagia, -10 energi)\n";
-    cout << "2. \U000026BD Main bola (+20 koin, +20 bahagia, -7 energi)\n";
+    cout << "2. \U000026BD Main bola (+20 koin, +20 bahagia, -15 energi)\n";
     cout << "3. \U0001F938 Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
     cout << "4. \U0001F519 Kembali\n";
     pilih = ValidasiInput(1, 4, "Pilihan: ");
