@@ -725,6 +725,8 @@ void gameSusunBola (pet &p, aktivitas* &head, Skill* skillRoot){
         continue;
     }
 
+    pindah(asal - 1, tujuan - 1);
+
     } while (true);
 }
 
@@ -787,7 +789,6 @@ void gamePenaltyShoot(pet &p, aktivitas* &head)
             cout << "GOOOOL!\n";
             gol++;
         }
-        tendangan = ValidasiInput(1, 5, "Pilihan: ");
     }
 
     int bonusKoin = gol * 10;
@@ -1477,7 +1478,7 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
 
     cout << "\n=== PILIH AKTIVITAS MAIN ===\n";
     cout << "Energi saat ini: " << p.energi << endl;
-    cout << "1. Main susun bola (+50 koin, +35 bahagia, -20 energi)\n";
+    cout << "1. Main susun bola (+50 koin, +35 bahagia, -10 energi)\n";
     cout << "2. Main bola (+20 koin, +20 bahagia, -7 energi)\n";
     cout << "3. Main lompat tinggi (+10 koin, +10 bahagia, -5 energi)\n";
     cout << "4. Kembali\n";
@@ -1520,13 +1521,8 @@ void Main(pet &p, aktivitas* &head, Skill* skillRoot,  teman* daftarTeman){
             cout << p.nama_pet << " terlalu lelah untuk bermain bola!\n";
             return;
         }
-        p.koin += 20;
-        p.energi -= 15;
-        p.bahagia +=15;
-        TambahAktivitas(head, "Jalan-jalan");
-        cout << "Selesai bermain!\n";
-        cout << "Bahagia sekarang   : " << p.bahagia << endl;
-        cout << "Koin sekarang      : " << p.koin << endl;
+        
+        gamePenaltyShoot(p, head);
     }
     else if (pilih == 3) {
         if (p.energi < 5) {
@@ -1779,7 +1775,7 @@ void Klinik(pet &p, aktivitas* &head)
 
 void jalanjalan(int &posisi, pet &p, aktivitas* &head)
 {
-    int tujuan[10];
+    int tujuan[jumlah_lokasi];
     int jumlah = 0;
 
         cout << "\n========== PETA KOTA ==========\n";
